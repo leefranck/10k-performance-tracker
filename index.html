@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0f172a" />
+  <title>10K Performance Tracker</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">OBJECTIF</p>
+        <h1>10K Performance</h1>
+      </div>
+      <div class="pill">2 200 kcal/j</div>
+    </header>
+
+    <section class="summary-grid" aria-label="Résumé de la semaine">
+      <article class="metric-card">
+        <span>Progression</span>
+        <strong id="globalPercent">0%</strong>
+      </article>
+      <article class="metric-card">
+        <span>Running</span>
+        <strong>3</strong>
+      </article>
+      <article class="metric-card">
+        <span>Muscu</span>
+        <strong>2</strong>
+      </article>
+      <article class="metric-card">
+        <span>Foot</span>
+        <strong>2</strong>
+      </article>
+    </section>
+
+    <section class="progress-wrap">
+      <div class="progress-head">
+        <span>Semaine</span>
+        <span id="globalCount">0 / 0</span>
+      </div>
+      <div class="progress-track" aria-hidden="true">
+        <div id="globalBar" class="progress-bar"></div>
+      </div>
+    </section>
+
+    <nav id="dayNav" class="day-nav" aria-label="Jours de la semaine"></nav>
+
+    <main>
+      <section id="dayHero" class="day-hero"></section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">ENTRAÎNEMENT</p>
+            <h2 id="trainingTitle"></h2>
+          </div>
+          <span id="trainingBadge" class="pill"></span>
+        </div>
+        <div id="trainingContent" class="stack"></div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">NUTRITION</p>
+            <h2>4 repas · ≈ 2 200 kcal</h2>
+          </div>
+          <span id="mealProgress" class="pill">0 / 4</span>
+        </div>
+        <div id="mealList" class="stack"></div>
+      </section>
+
+      <section id="dailyTip" class="tip"></section>
+    </main>
+  </div>
+
+  <template id="checkboxTemplate">
+    <label class="check-row">
+      <input type="checkbox" />
+      <span class="checkmark"></span>
+      <span class="check-label"></span>
+    </label>
+  </template>
+
+  <script src="./app.js"></script>
+</body>
+</html>
