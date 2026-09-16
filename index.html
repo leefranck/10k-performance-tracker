@@ -6,47 +6,46 @@
   <meta name="theme-color" content="#0b1220" />
   <title>10K Hybrid Performance</title>
   <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="./ux-tweaks.css" />
 </head>
 <body>
   <div class="app-shell">
-    <header class="topbar">
-      <div>
-        <p class="eyebrow">OBJECTIF HYBRIDE</p>
-        <h1>Sub‑40 · fort & sec</h1>
-        <p class="subtitle">Course + musculation + foot, sans sacrifier la masse musculaire.</p>
+    <nav id="dayNav" class="day-nav" aria-label="Jours de la semaine"></nav>
+
+    <header class="compact-topbar">
+      <div class="compact-brand">
+        <p class="eyebrow">10K HYBRID</p>
+        <div class="compact-goal-row">
+          <strong>Sub‑40</strong>
+          <span><span id="current10k">44:00</span> → 39:59</span>
+        </div>
       </div>
       <button id="settingsButton" class="icon-button" type="button" aria-label="Réglages">⚙️</button>
     </header>
 
-    <section class="goal-card" aria-label="Progression vers le sub 40">
-      <div>
-        <p class="eyebrow">10 KM</p>
-        <div class="goal-times"><strong id="current10k">44:00</strong><span>→</span><strong>39:59</strong></div>
+    <section class="compact-status" aria-label="Progression et programme actuel">
+      <div class="compact-status-head">
+        <div>
+          <strong id="blockName">Bloc 1 · Base</strong>
+          <span id="blockWeek" class="muted"></span>
+        </div>
+        <div><strong id="globalPercent">0%</strong> <span id="globalCount" class="muted">0 / 0</span></div>
       </div>
-      <div class="goal-meta"><span id="goalProgress">0%</span><small>vers le sub‑40</small></div>
-      <div class="progress-track"><div id="goalBar" class="progress-bar"></div></div>
-    </section>
-
-    <section class="summary-grid" aria-label="Charge hebdomadaire">
-      <article class="metric-card"><span>Running</span><strong>4</strong><small>dont récup</small></article>
-      <article class="metric-card"><span>Muscu</span><strong>3</strong><small>Upper / Lower / Upper</small></article>
-      <article class="metric-card"><span>Foot</span><strong>1</strong><small>lundi</small></article>
-      <article class="metric-card"><span>Semaine</span><strong id="globalPercent">0%</strong><small id="globalCount">0 / 0</small></article>
-    </section>
-
-    <section class="block-card">
-      <div>
-        <p class="eyebrow">PROGRAMME ACTUEL</p>
-        <h2><span id="blockName">Bloc 1 · Base</span> <span id="blockWeek" class="muted"></span></h2>
-        <p id="blockDescription" class="microcopy"></p>
+      <p id="blockDescription" class="microcopy"></p>
+      <div class="compact-status-row">
+        <div class="compact-meta">
+          <span>🏃 4 running</span>
+          <span>🏋️ 3 muscu</span>
+          <span>⚽ 1 foot</span>
+        </div>
+        <span class="compact-meta"><strong id="goalProgress">0%</strong>&nbsp;vers le sub‑40</span>
       </div>
-      <div class="block-actions">
+      <div class="progress-track" aria-hidden="true"><div id="goalBar" class="progress-bar"></div></div>
+      <div class="compact-actions">
         <button id="historyButton" class="secondary-button" type="button">Historique</button>
-        <button id="completeWeekButton" class="primary-button" type="button">Valider la semaine</button>
+        <button id="completeWeekButton" class="secondary-button" type="button">Valider la semaine</button>
       </div>
     </section>
-
-    <nav id="dayNav" class="day-nav" aria-label="Jours de la semaine"></nav>
 
     <main>
       <section id="dayHero" class="day-hero"></section>
