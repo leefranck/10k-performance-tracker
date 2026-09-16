@@ -1,0 +1,198 @@
+/* UX refinements: keep the weekly actions first and the performance context subtle. */
+.app-shell {
+  padding-top: max(12px, env(safe-area-inset-top));
+}
+
+/* The week is the primary navigation: always the first visible section. */
+.day-nav {
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 5px;
+  margin: 0 0 10px;
+  overflow: visible;
+  padding: 0;
+}
+
+.day-btn {
+  min-width: 0;
+  min-height: 44px;
+  padding: 8px 2px;
+  border-radius: 12px;
+  font-size: .72rem;
+}
+
+/* Replace the former hero/header with a compact utility row. */
+.compact-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+  padding: 2px 2px 0;
+}
+
+.compact-brand {
+  min-width: 0;
+}
+
+.compact-brand .eyebrow {
+  margin-bottom: 2px;
+  font-size: .62rem;
+}
+
+.compact-goal-row {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+  min-width: 0;
+}
+
+.compact-goal-row > strong {
+  font-size: 1rem;
+  letter-spacing: -.025em;
+}
+
+.compact-goal-row > span {
+  color: var(--muted);
+  font-size: .76rem;
+  font-weight: 750;
+  white-space: nowrap;
+}
+
+.compact-topbar .icon-button {
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  background: transparent;
+  box-shadow: none;
+}
+
+/* Programme/progress context is deliberately secondary to today's workout. */
+.compact-status {
+  margin-bottom: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: rgba(255,255,255,.72);
+  box-shadow: none;
+}
+
+.compact-status-head,
+.compact-status-row,
+.compact-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.compact-status-head strong {
+  font-size: .82rem;
+}
+
+.compact-status-head .muted,
+.compact-status-row,
+.compact-meta {
+  color: var(--muted);
+  font-size: .7rem;
+}
+
+.compact-status .microcopy {
+  margin-top: 3px;
+  font-size: .7rem;
+  line-height: 1.3;
+}
+
+.compact-status-row {
+  margin-top: 7px;
+}
+
+.compact-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px 8px;
+  align-items: center;
+}
+
+.compact-status .progress-track {
+  height: 4px;
+  margin-top: 7px;
+}
+
+.compact-actions {
+  justify-content: flex-start;
+  margin-top: 8px;
+}
+
+.compact-actions button {
+  min-height: 34px;
+  padding: 6px 9px;
+  border-radius: 10px;
+  font-size: .7rem;
+}
+
+/* The selected day and the actual session now carry the visual hierarchy. */
+.day-hero {
+  margin-bottom: 10px;
+  padding: 14px;
+  box-shadow: 0 6px 18px rgba(16,24,40,.05);
+}
+
+.panel {
+  box-shadow: 0 8px 24px rgba(16,24,40,.055);
+}
+
+/* Dialogs must never clip content on short/mobile viewports. */
+dialog {
+  width: min(calc(100% - 20px), 620px);
+  max-height: calc(100dvh - 20px);
+  overflow: hidden;
+  margin: auto;
+}
+
+.settings-card {
+  max-height: calc(100dvh - 20px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-gutter: stable;
+}
+
+.settings-card > .panel-head:first-child {
+  position: sticky;
+  top: -18px;
+  z-index: 2;
+  margin: -18px -18px 2px;
+  padding: 18px 18px 10px;
+  background: rgba(255,255,255,.96);
+  backdrop-filter: blur(8px);
+}
+
+.settings-card > .primary-button:last-child {
+  position: sticky;
+  bottom: -18px;
+  z-index: 2;
+  margin: 2px -18px -18px;
+  border-radius: 0 0 22px 22px;
+  padding: 14px 18px calc(14px + env(safe-area-inset-bottom));
+}
+
+@media (max-width: 620px) {
+  .day-nav {
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    overflow: visible;
+    padding-bottom: 0;
+  }
+
+  .compact-status-row {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 5px;
+  }
+}
+
+@media (max-width: 370px) {
+  .day-nav { gap: 3px; }
+  .day-btn { font-size: .67rem; }
+  .compact-goal-row { gap: 6px; }
+  .compact-goal-row > span { font-size: .7rem; }
+}
