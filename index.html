@@ -140,6 +140,28 @@
     </div>
   </dialog>
 
+  <script>
+    (() => {
+      const k = "tenk-hybrid-performance-v2";
+      try {
+        const existing = JSON.parse(localStorage.getItem(k));
+        if (existing?.version === 2 && existing?.weeks) return;
+      } catch {}
+      const now = new Date();
+      const d = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
+      const day = d.getUTCDay() || 7;
+      d.setUTCDate(d.getUTCDate() + 4 - day);
+      const y = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+      const w = Math.ceil((((d - y) / 86400000) + 1) / 7);
+      const weekKey = `${d.getUTCFullYear()}-W${String(w).padStart(2, "0")}`;
+      localStorage.setItem(k, JSON.stringify({
+        version: 2,
+        settings: { pbSeconds: 2640, treadmillDefault: false, autoAdvance: true },
+        activeWeekKey: weekKey,
+        weeks: { [weekKey]: { key: weekKey, status: "active", startedAt: new Date().toISOString(), completedAt: null, program: { block: "base", week: 1 }, data: {}, recovery: {}, pbSnapshot: 2640 } }
+      }));
+    })();
+  </script>
   <script src="./app.js"></script>
 </body>
 </html>
