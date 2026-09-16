@@ -26,8 +26,8 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  margin-bottom: 8px;
-  padding: 2px 2px 0;
+  margin-bottom: 6px;
+  padding: 0 2px;
 }
 
 .compact-brand {
@@ -36,44 +36,112 @@
 
 .compact-brand .eyebrow {
   margin-bottom: 2px;
-  font-size: .62rem;
+  font-size: .6rem;
 }
 
 .compact-goal-row {
   display: flex;
   align-items: baseline;
-  gap: 9px;
+  gap: 8px;
   min-width: 0;
 }
 
 .compact-goal-row > strong {
-  font-size: 1rem;
-  letter-spacing: -.025em;
+  font-size: .92rem;
+  letter-spacing: -.02em;
 }
 
 .compact-goal-row > span {
   color: var(--muted);
-  font-size: .76rem;
+  font-size: .72rem;
   font-weight: 750;
   white-space: nowrap;
 }
 
 .compact-topbar .icon-button {
-  width: 38px;
-  height: 38px;
-  border-radius: 11px;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
   background: transparent;
   box-shadow: none;
 }
 
-/* Programme/progress context is deliberately secondary to today's workout. */
+/* Programme/progress context becomes a closed accordion by default. */
 .compact-status {
-  margin-bottom: 10px;
-  padding: 10px 12px;
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  background: rgba(255,255,255,.72);
+  margin-bottom: 8px;
+  padding: 0;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
   box-shadow: none;
+}
+
+.compact-status-summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 8px;
+  align-items: center;
+  min-height: 38px;
+  padding: 7px 8px;
+  border: 1px solid rgba(228,231,236,.85);
+  border-radius: 11px;
+  background: rgba(255,255,255,.5);
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+}
+
+.compact-status-summary::-webkit-details-marker { display: none; }
+.compact-status-summary::marker { content: ""; }
+
+.accordion-main {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  min-width: 0;
+}
+
+.accordion-main strong {
+  overflow: hidden;
+  font-size: .76rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.accordion-main .muted,
+.accordion-progress {
+  color: var(--muted);
+  font-size: .66rem;
+}
+
+.accordion-progress {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  white-space: nowrap;
+}
+
+.accordion-progress strong {
+  color: var(--text);
+  font-size: .72rem;
+}
+
+.accordion-chevron {
+  color: var(--muted);
+  font-size: .8rem;
+  transition: transform .16s ease;
+}
+
+.accordion-status[open] .accordion-chevron {
+  transform: rotate(180deg);
+}
+
+.compact-status-body {
+  margin-top: 5px;
+  padding: 8px 10px 10px;
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  background: rgba(255,255,255,.72);
 }
 
 .compact-status-head,
@@ -97,8 +165,8 @@
 }
 
 .compact-status .microcopy {
-  margin-top: 3px;
-  font-size: .7rem;
+  margin-top: 0;
+  font-size: .69rem;
   line-height: 1.3;
 }
 
@@ -194,5 +262,7 @@ dialog {
   .day-nav { gap: 3px; }
   .day-btn { font-size: .67rem; }
   .compact-goal-row { gap: 6px; }
-  .compact-goal-row > span { font-size: .7rem; }
+  .compact-goal-row > span { font-size: .68rem; }
+  .compact-status-summary { gap: 5px; padding-inline: 7px; }
+  .accordion-main .muted { display: none; }
 }
