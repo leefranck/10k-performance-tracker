@@ -3,46 +3,46 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#0f172a" />
-  <title>10K Performance Tracker</title>
+  <meta name="theme-color" content="#0b1220" />
+  <title>10K Hybrid Performance</title>
   <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
   <div class="app-shell">
     <header class="topbar">
       <div>
-        <p class="eyebrow">OBJECTIF</p>
-        <h1>10K Performance</h1>
+        <p class="eyebrow">OBJECTIF HYBRIDE</p>
+        <h1>Sub‑40 · fort & sec</h1>
+        <p class="subtitle">Course + musculation + foot, sans sacrifier la masse musculaire.</p>
       </div>
-      <div class="pill">2 200 kcal/j</div>
+      <button id="settingsButton" class="icon-button" type="button" aria-label="Réglages">⚙️</button>
     </header>
 
-    <section class="summary-grid" aria-label="Résumé de la semaine">
-      <article class="metric-card">
-        <span>Progression</span>
-        <strong id="globalPercent">0%</strong>
-      </article>
-      <article class="metric-card">
-        <span>Running</span>
-        <strong>3</strong>
-      </article>
-      <article class="metric-card">
-        <span>Muscu</span>
-        <strong>2</strong>
-      </article>
-      <article class="metric-card">
-        <span>Foot</span>
-        <strong>2</strong>
-      </article>
+    <section class="goal-card" aria-label="Progression vers le sub 40">
+      <div>
+        <p class="eyebrow">10 KM</p>
+        <div class="goal-times"><strong id="current10k">44:00</strong><span>→</span><strong>39:59</strong></div>
+      </div>
+      <div class="goal-meta"><span id="goalProgress">0%</span><small>vers le sub‑40</small></div>
+      <div class="progress-track"><div id="goalBar" class="progress-bar"></div></div>
     </section>
 
-    <section class="progress-wrap">
-      <div class="progress-head">
-        <span>Semaine</span>
-        <span id="globalCount">0 / 0</span>
+    <section class="summary-grid" aria-label="Charge hebdomadaire">
+      <article class="metric-card"><span>Running</span><strong>4</strong><small>dont récup</small></article>
+      <article class="metric-card"><span>Muscu</span><strong>3</strong><small>Upper / Lower / Upper</small></article>
+      <article class="metric-card"><span>Foot</span><strong>1</strong><small>lundi</small></article>
+      <article class="metric-card"><span>Semaine</span><strong id="globalPercent">0%</strong><small id="globalCount">0 / 0</small></article>
+    </section>
+
+    <section class="block-card">
+      <div>
+        <p class="eyebrow">PROGRAMME ACTUEL</p>
+        <h2><span id="blockName">Bloc 1 · Base</span> <span id="blockWeek" class="muted"></span></h2>
+        <p id="blockDescription" class="microcopy"></p>
       </div>
-      <div class="progress-track" aria-hidden="true">
-        <div id="globalBar" class="progress-bar"></div>
+      <div class="block-actions">
+        <button id="historyButton" class="secondary-button" type="button">Historique</button>
+        <button id="completeWeekButton" class="primary-button" type="button">Valider la semaine</button>
       </div>
     </section>
 
@@ -53,38 +53,115 @@
 
       <section class="panel">
         <div class="panel-head">
-          <div>
-            <p class="eyebrow">ENTRAÎNEMENT</p>
-            <h2 id="trainingTitle"></h2>
-          </div>
+          <div><p class="eyebrow">SÉANCE</p><h2 id="trainingTitle"></h2></div>
           <span id="trainingBadge" class="pill"></span>
         </div>
         <div id="trainingContent" class="stack"></div>
       </section>
 
-      <section class="panel">
-        <div class="panel-head">
-          <div>
-            <p class="eyebrow">NUTRITION</p>
-            <h2>4 repas · ≈ 2 200 kcal</h2>
-          </div>
-          <span id="mealProgress" class="pill">0 / 4</span>
+      <section id="timerPanel" class="timer-panel hidden" aria-live="polite">
+        <div class="timer-topline">
+          <div><p class="eyebrow">CHRONO</p><strong id="timerPhase">Prêt</strong></div>
+          <span id="timerRep" class="pill">—</span>
         </div>
-        <div id="mealList" class="stack"></div>
+        <div id="timerDisplay" class="timer-display">00:00</div>
+        <div id="timerHint" class="timer-hint">Démarre uniquement quand tu es prêt.</div>
+        <div class="timer-actions">
+          <button id="timerStart" class="primary-button" type="button">Démarrer</button>
+          <button id="timerNext" class="secondary-button" type="button">Suivant</button>
+          <button id="timerReset" class="ghost-button" type="button">Reset</button>
+        </div>
+        <label class="auto-toggle"><input id="autoAdvance" type="checkbox" checked /><span>Enchaîner automatiquement effort ↔ récupération</span></label>
+      </section>
+
+      <section class="panel compact-panel">
+        <div class="panel-head"><div><p class="eyebrow">RÉCUPÉRATION</p><h2>Check rapide</h2></div><span class="pill">30 sec</span></div>
+        <div class="recovery-grid">
+          <label>Sommeil<input id="sleepInput" type="number" min="0" max="12" step="0.5" placeholder="7.5" /></label>
+          <label>Énergie<select id="energyInput"><option value="">—</option><option value="1">1 · basse</option><option value="2">2</option><option value="3">3 · normale</option><option value="4">4</option><option value="5">5 · haute</option></select></label>
+          <label>Jambes<select id="legsInput"><option value="">—</option><option value="1">1 · fraîches</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5 · lourdes</option></select></label>
+        </div>
+        <p id="recoveryAdvice" class="microcopy">Renseigne ton état : l'app t'aide à éviter d'empiler la fatigue.</p>
+      </section>
+
+      <section class="panel compact-panel">
+        <div class="panel-head"><div><p class="eyebrow">NUTRITION</p><h2>Préserver le muscle</h2></div><span class="pill">hybride</span></div>
+        <div class="nutrition-cards">
+          <div><strong>160–175 g</strong><span>protéines / jour</span></div>
+          <div><strong>Glucides</strong><span>autour des séances clés</span></div>
+          <div><strong>Déficit léger</strong><span>uniquement si perte de gras</span></div>
+        </div>
       </section>
 
       <section id="dailyTip" class="tip"></section>
     </main>
   </div>
 
-  <template id="checkboxTemplate">
-    <label class="check-row">
-      <input type="checkbox" />
-      <span class="checkmark"></span>
-      <span class="check-label"></span>
-    </label>
-  </template>
+  <dialog id="settingsDialog">
+    <form method="dialog" class="settings-card">
+      <div class="panel-head"><div><p class="eyebrow">RÉGLAGES</p><h2>Profil performance</h2></div><button class="icon-button" value="cancel" aria-label="Fermer">✕</button></div>
+      <label>Meilleur 10 km actuel<input id="pbInput" type="text" inputmode="numeric" placeholder="44:00" /></label>
+      <label class="auto-toggle"><input id="treadmillDefault" type="checkbox" /><span>Mode tapis par défaut</span></label>
+      <label class="auto-toggle"><input id="settingsAutoAdvance" type="checkbox" /><span>Enchaînement automatique du chrono guidé</span></label>
+      <p class="microcopy">Le démarrage reste toujours manuel : aucun chrono ne part tout seul pendant que tu montes sur le tapis.</p>
+      <button id="exportButton" class="secondary-button" type="button">Exporter mes données</button>
+      <button id="saveSettings" class="primary-button" value="default">Enregistrer</button>
+    </form>
+  </dialog>
 
+  <dialog id="historyDialog">
+    <div class="settings-card history-card">
+      <div class="panel-head"><div><p class="eyebrow">HISTORIQUE</p><h2>Semaines sauvegardées</h2></div><button id="closeHistory" class="icon-button" type="button">✕</button></div>
+      <div id="historyList" class="history-list"></div>
+    </div>
+  </dialog>
+
+  <dialog id="rolloverDialog">
+    <div class="settings-card">
+      <p class="eyebrow">NOUVELLE SEMAINE DÉTECTÉE</p>
+      <h2>Archiver la semaine précédente ?</h2>
+      <p class="microcopy">Rien n'est supprimé. Tes charges, reps, chronos et validations restent dans l'historique. La nouvelle semaine démarre seulement après ta confirmation.</p>
+      <div class="dialog-actions">
+        <button id="continueOldWeek" class="secondary-button" type="button">Continuer l'ancienne</button>
+        <button id="startNewWeek" class="primary-button" type="button">Archiver & commencer</button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="blockDialog">
+    <div class="settings-card">
+      <p class="eyebrow">FIN DE BLOC</p>
+      <h2 id="blockDialogTitle">Passer au bloc suivant ?</h2>
+      <p id="blockDialogText" class="microcopy"></p>
+      <div class="dialog-actions">
+        <button id="stayBlock" class="secondary-button" type="button">Rester sur ce bloc</button>
+        <button id="advanceBlock" class="primary-button" type="button">Passer au bloc suivant</button>
+      </div>
+    </div>
+  </dialog>
+
+  <script>
+    (() => {
+      const k = "tenk-hybrid-performance-v2";
+      try {
+        const existing = JSON.parse(localStorage.getItem(k));
+        if (existing?.version === 2 && existing?.weeks) return;
+      } catch {}
+      const now = new Date();
+      const d = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
+      const day = d.getUTCDay() || 7;
+      d.setUTCDate(d.getUTCDate() + 4 - day);
+      const y = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+      const w = Math.ceil((((d - y) / 86400000) + 1) / 7);
+      const weekKey = `${d.getUTCFullYear()}-W${String(w).padStart(2, "0")}`;
+      localStorage.setItem(k, JSON.stringify({
+        version: 2,
+        settings: { pbSeconds: 2640, treadmillDefault: false, autoAdvance: true },
+        activeWeekKey: weekKey,
+        weeks: { [weekKey]: { key: weekKey, status: "active", startedAt: new Date().toISOString(), completedAt: null, program: { block: "base", week: 1 }, data: {}, recovery: {}, pbSnapshot: 2640 } }
+      }));
+    })();
+  </script>
   <script src="./app.js"></script>
 </body>
 </html>
