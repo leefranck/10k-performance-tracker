@@ -23,29 +23,32 @@
       <button id="settingsButton" class="icon-button" type="button" aria-label="Réglages">⚙️</button>
     </header>
 
-    <section class="compact-status" aria-label="Progression et programme actuel">
-      <div class="compact-status-head">
-        <div>
+    <details id="programAccordion" class="compact-status accordion-status" aria-label="Progression et programme actuel">
+      <summary class="compact-status-summary">
+        <div class="accordion-main">
           <strong id="blockName">Bloc 1 · Base</strong>
           <span id="blockWeek" class="muted"></span>
         </div>
-        <div><strong id="globalPercent">0%</strong> <span id="globalCount" class="muted">0 / 0</span></div>
-      </div>
-      <p id="blockDescription" class="microcopy"></p>
-      <div class="compact-status-row">
-        <div class="compact-meta">
-          <span>🏃 4 running</span>
-          <span>🏋️ 3 muscu</span>
-          <span>⚽ 1 foot</span>
+        <div class="accordion-progress"><strong id="globalPercent">0%</strong><span id="globalCount" class="muted">0 / 0</span></div>
+        <span class="accordion-chevron" aria-hidden="true">⌄</span>
+      </summary>
+      <div class="compact-status-body">
+        <p id="blockDescription" class="microcopy"></p>
+        <div class="compact-status-row">
+          <div class="compact-meta">
+            <span>🏃 4 running</span>
+            <span>🏋️ 3 muscu</span>
+            <span>⚽ 1 foot</span>
+          </div>
+          <span class="compact-meta"><strong id="goalProgress">0%</strong>&nbsp;vers le sub‑40</span>
         </div>
-        <span class="compact-meta"><strong id="goalProgress">0%</strong>&nbsp;vers le sub‑40</span>
+        <div class="progress-track" aria-hidden="true"><div id="goalBar" class="progress-bar"></div></div>
+        <div class="compact-actions">
+          <button id="historyButton" class="secondary-button" type="button">Historique</button>
+          <button id="completeWeekButton" class="secondary-button" type="button">Valider la semaine</button>
+        </div>
       </div>
-      <div class="progress-track" aria-hidden="true"><div id="goalBar" class="progress-bar"></div></div>
-      <div class="compact-actions">
-        <button id="historyButton" class="secondary-button" type="button">Historique</button>
-        <button id="completeWeekButton" class="secondary-button" type="button">Valider la semaine</button>
-      </div>
-    </section>
+    </details>
 
     <main>
       <section id="dayHero" class="day-hero"></section>
