@@ -1,0 +1,66 @@
+.email-settings-field small.field-help {
+  display: block;
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: .68rem;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.recap-email-block {
+  display: grid;
+  gap: 9px;
+  margin-bottom: 12px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: #f8fafc;
+}
+
+.recap-email-copy {
+  display: grid;
+  gap: 3px;
+}
+
+.recap-email-copy strong {
+  font-size: .84rem;
+}
+
+.recap-email-copy span {
+  color: var(--muted);
+  font-size: .72rem;
+  line-height: 1.35;
+}
+
+.recap-email-block label {
+  display: grid;
+  gap: 6px;
+  color: var(--muted);
+  font-size: .72rem;
+  font-weight: 800;
+}
+
+.recap-email-block input {
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 9px 10px;
+  background: #fff;
+  color: var(--text);
+  font: inherit;
+}
+
+.email-error {
+  min-height: 0;
+  margin: 0;
+  color: var(--danger);
+  font-size: .7rem;
+  font-weight: 750;
+  line-height: 1.35;
+}
+
+.email-error:empty {
+  display: none;
+}
