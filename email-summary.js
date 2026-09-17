@@ -4,6 +4,7 @@
   installSettingsEmailField();
   installRecapEmailField();
   bindEmailEvents();
+  syncRecapEmail();
 
   function installSettingsEmailField() {
     if (document.getElementById("summaryEmailInput")) return;
@@ -56,12 +57,6 @@
       syncRecapEmail();
     }, true);
 
-    const validateButton = document.getElementById("completeWeekButton");
-    validateButton?.addEventListener("click", () => {
-      // week-flow opens the dialog from this same interaction. Populate after it renders.
-      queueMicrotask(syncRecapEmail);
-    });
-
     const recapEmail = document.getElementById("weekRecapEmail");
     recapEmail?.addEventListener("input", () => {
       document.getElementById("weekRecapEmailError").textContent = "";
@@ -99,9 +94,11 @@
   }
 
   function syncRecapEmail() {
-    const input = document.getElementById("weekRecapEmail");
-    if (!input) return;
-    input.value = store.settings?.[EMAIL_SETTING] || document.getElementById("summaryEmailInput")?.value || "";
+    const stored = store.settings?.[EMAIL_SETTING] || "";
+    const recap = document.getElementById("weekRecapEmail");
+    const settings = document.getElementById("summaryEmailInput");
+    if (recap) recap.value = stored;
+    if (settings && !settings.value) settings.value = stored;
     const error = document.getElementById("weekRecapEmailError");
     if (error) error.textContent = "";
   }
@@ -163,7 +160,6 @@
 
   function weekStats(week) {
     const previous = currentWeek;
-    // currentWeek is overridden by week-flow; temporarily point it at the requested week.
     currentWeek = () => week;
     try {
       const allKeys = [1, 2, 3, 4, 5, 6, 0].flatMap(trackableKeysForDay);
