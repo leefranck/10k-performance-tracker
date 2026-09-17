@@ -209,6 +209,23 @@
   box-shadow: 0 8px 24px rgba(16,24,40,.055);
 }
 
+/* Exercise header: separate exercise name from set/reps/RIR metadata. */
+.exercise summary > span:first-child {
+  display: inline-flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  column-gap: 12px;
+  row-gap: 4px;
+  min-width: 0;
+}
+
+.exercise summary .exercise-sub {
+  display: inline-block;
+  flex: 0 0 auto;
+  margin-left: 0;
+  white-space: nowrap;
+}
+
 /* Dialogs must never clip content on short/mobile viewports. */
 dialog {
   width: min(calc(100% - 20px), 620px);
