@@ -1,110 +1,63 @@
 (() => {
-  const EMAIL_SETTING = "summaryEmail";
+  const SUMMARY_EMAIL = "leefranck@hotmail.fr";
 
-  installSettingsEmailField();
-  installRecapEmailField();
+  installSettingsEmailInfo();
+  installRecapEmailInfo();
   bindEmailEvents();
-  syncRecapEmail();
 
-  function installSettingsEmailField() {
-    if (document.getElementById("summaryEmailInput")) return;
+  function installSettingsEmailInfo() {
+    if (document.getElementById("summaryEmailInfo")) return;
     const pbInput = document.getElementById("pbInput");
     const anchor = pbInput?.closest("label");
     if (!anchor) return;
 
-    const label = document.createElement("label");
-    label.className = "email-settings-field";
-    label.innerHTML = `Adresse email pour les récapitulatifs
-      <input id="summaryEmailInput" type="email" inputmode="email" autocomplete="email" placeholder="ton@email.com" />
-      <small class="field-help">Utilisée uniquement pour préparer le récap quand tu valides une semaine.</small>`;
-    anchor.insertAdjacentElement("afterend", label);
+    const block = document.createElement("div");
+    block.id = "summaryEmailInfo";
+    block.className = "email-settings-field fixed-email-field";
+    block.innerHTML = `
+      <span class="fixed-email-label">Email des récapitulatifs</span>
+      <strong>${SUMMARY_EMAIL}</strong>
+      <small class="field-help">Destinataire fixe. Le récap email est obligatoire lors de la validation d'une semaine.</small>`;
+    anchor.insertAdjacentElement("afterend", block);
   }
 
-  function installRecapEmailField() {
-    if (document.getElementById("weekRecapEmail")) return;
+  function installRecapEmailInfo() {
+    if (document.getElementById("weekRecapEmailInfo")) return;
     const confirmation = document.querySelector("#weekRecapDialog .recap-confirmation");
     if (!confirmation) return;
 
     const block = document.createElement("div");
-    block.className = "recap-email-block";
+    block.id = "weekRecapEmailInfo";
+    block.className = "recap-email-block fixed-email-recap";
     block.innerHTML = `
       <div class="recap-email-copy">
-        <strong>📧 Récap par email</strong>
-        <span>Après validation, ton app Mail s'ouvrira avec le bilan complet déjà rempli.</span>
+        <strong>📧 Envoi du récap obligatoire</strong>
+        <span>La validation préparera automatiquement le bilan complet pour :</span>
       </div>
-      <label>Envoyer à
-        <input id="weekRecapEmail" type="email" inputmode="email" autocomplete="email" placeholder="ton@email.com" />
-      </label>
-      <p id="weekRecapEmailError" class="email-error" role="alert"></p>`;
+      <div class="fixed-email-address">${SUMMARY_EMAIL}</div>
+      <p class="field-help">Ton app Mail s'ouvrira avec le destinataire, l'objet et le récap déjà remplis.</p>`;
     confirmation.insertAdjacentElement("afterbegin", block);
   }
 
   function bindEmailEvents() {
-    const settingsButton = document.getElementById("settingsButton");
-    settingsButton?.addEventListener("click", () => {
-      const input = document.getElementById("summaryEmailInput");
-      if (input) input.value = store.settings?.[EMAIL_SETTING] || "";
-    });
-
-    const saveSettings = document.getElementById("saveSettings");
-    saveSettings?.addEventListener("click", () => {
-      const input = document.getElementById("summaryEmailInput");
-      if (!input) return;
-      const email = input.value.trim();
-      if (!store.settings) store.settings = {};
-      store.settings[EMAIL_SETTING] = email;
-      saveStore();
-      syncRecapEmail();
-    }, true);
-
-    const recapEmail = document.getElementById("weekRecapEmail");
-    recapEmail?.addEventListener("input", () => {
-      document.getElementById("weekRecapEmailError").textContent = "";
-    });
-
     const confirm = document.getElementById("confirmWeekValidation");
     confirm?.addEventListener("click", (event) => {
-      const input = document.getElementById("weekRecapEmail");
-      const email = (input?.value || store.settings?.[EMAIL_SETTING] || "").trim();
-      const error = document.getElementById("weekRecapEmailError");
-
-      if (!isValidEmail(email)) {
+      const week = store.weeks[store.activeWeekKey];
+      if (!week) {
         event.preventDefault();
         event.stopImmediatePropagation();
-        if (error) error.textContent = "Renseigne une adresse email valide pour recevoir le récap de la semaine.";
-        input?.focus();
         return;
       }
 
-      if (!store.settings) store.settings = {};
-      store.settings[EMAIL_SETTING] = email;
-      saveStore();
-
-      const week = store.weeks[store.activeWeekKey];
-      if (!week) return;
       const message = buildWeeklyEmail(week);
-      const mailto = `mailto:${email}?subject=${encodeURIComponent(message.subject)}&body=${encodeURIComponent(message.body)}`;
+      const mailto = `mailto:${SUMMARY_EMAIL}?subject=${encodeURIComponent(message.subject)}&body=${encodeURIComponent(message.body)}`;
 
-      // Let week-flow archive the current week and render the next one first.
-      // Then invoke the native/default mail app with the prepared summary.
+      // This handler runs during capture, before the week transition handler.
+      // Let week-flow archive and load the next week, then open the native mail composer.
       setTimeout(() => {
         window.location.href = mailto;
-      }, 80);
+      }, 120);
     }, true);
-  }
-
-  function syncRecapEmail() {
-    const stored = store.settings?.[EMAIL_SETTING] || "";
-    const recap = document.getElementById("weekRecapEmail");
-    const settings = document.getElementById("summaryEmailInput");
-    if (recap) recap.value = stored;
-    if (settings && !settings.value) settings.value = stored;
-    const error = document.getElementById("weekRecapEmailError");
-    if (error) error.textContent = "";
-  }
-
-  function isValidEmail(value) {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
   }
 
   function buildWeeklyEmail(week) {
@@ -152,6 +105,7 @@
       `• Vendredi : ${nextPlan.easy[0]} min facile${nextPlan.easy[1] ? ` + ${nextPlan.easy[1]} strides` : ""}`,
       `• Dimanche : ${nextPlan.long} min sortie longue`,
       "",
+      `Destinataire : ${SUMMARY_EMAIL}`,
       `Généré par 10K Hybrid Performance.`
     ];
 
