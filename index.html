@@ -8,10 +8,10 @@
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
   <title>10K Hybrid Performance</title>
-  <link rel="stylesheet" href="./styles.css?v=20260919-0115-1" />
-  <link rel="stylesheet" href="./ux-tweaks.css?v=20260919-0115-1" />
-  <link rel="stylesheet" href="./week-flow.css?v=20260919-0115-1" />
-  <link rel="stylesheet" href="./email-summary.css?v=20260919-0115-1" />
+  <link rel="stylesheet" href="./styles.css?v=20260919-0128-1" />
+  <link rel="stylesheet" href="./ux-tweaks.css?v=20260919-0128-1" />
+  <link rel="stylesheet" href="./week-flow.css?v=20260919-0128-1" />
+  <link rel="stylesheet" href="./email-summary.css?v=20260919-0128-1" />
 </head>
 <body>
   <div class="app-shell">
@@ -55,17 +55,19 @@
       </div>
     </details>
 
-    <main>
-      <details id="recoveryAccordion" class="training-section-accordion recovery-top-accordion">
-        <summary class="training-section-summary">
-          <span class="training-section-icon">❤️</span>
-          <span class="training-section-copy">
-            <strong>Check rapide</strong>
+    <main id="dayMain">
+      <section id="dailyTip" class="tip day-top-tip"></section>
+
+      <details id="recoveryAccordion" class="panel day-card day-confirmable-card section-card-accordion">
+        <summary class="section-card-summary">
+          <div>
+            <p class="eyebrow">RÉCUPÉRATION</p>
+            <h2>Check rapide</h2>
             <small>Sommeil · énergie · jambes</small>
-          </span>
-          <span class="training-section-chevron" aria-hidden="true">⌄</span>
+          </div>
+          <span class="section-card-chevron" aria-hidden="true">⌄</span>
         </summary>
-        <div class="training-section-body">
+        <div class="section-card-body">
           <div class="recovery-grid">
             <label>Sommeil<input id="sleepInput" type="number" min="0" max="12" step="0.5" placeholder="7.5" /></label>
             <label>Énergie<select id="energyInput"><option value="">—</option><option value="1">1 · basse</option><option value="2">2</option><option value="3">3 · normale</option><option value="4">4</option><option value="5">5 · haute</option></select></label>
@@ -75,17 +77,45 @@
         </div>
       </details>
 
-      <section id="dayHero" class="day-hero"></section>
+      <section id="dayHero" class="day-hero day-confirmable-card"></section>
 
-      <section class="panel">
-        <div class="panel-head">
-          <div><p class="eyebrow">SÉANCE</p><h2 id="trainingTitle"></h2></div>
-          <span id="trainingBadge" class="pill"></span>
-        </div>
-        <div id="trainingContent" class="stack"></div>
-      </section>
+      <details id="activityCard" class="panel day-card day-confirmable-card section-card-accordion hidden">
+        <summary class="section-card-summary">
+          <div>
+            <p class="eyebrow">ACTIVITÉ</p>
+            <h2 id="activityTitle">Activité</h2>
+            <small id="activitySubtitle"></small>
+          </div>
+          <span class="section-card-chevron" aria-hidden="true">⌄</span>
+        </summary>
+        <div id="activityContent" class="section-card-body stack"></div>
+      </details>
 
-      <section id="timerPanel" class="timer-panel hidden" aria-live="polite">
+      <details id="strengthCard" class="panel day-card day-confirmable-card section-card-accordion hidden">
+        <summary class="section-card-summary">
+          <div>
+            <p class="eyebrow">MUSCULATION</p>
+            <h2 id="strengthCardTitle">Musculation</h2>
+            <small id="strengthCardSubtitle"></small>
+          </div>
+          <span class="section-card-chevron" aria-hidden="true">⌄</span>
+        </summary>
+        <div id="strengthCardContent" class="section-card-body"></div>
+      </details>
+
+      <details id="runCard" class="panel day-card day-confirmable-card section-card-accordion hidden">
+        <summary class="section-card-summary">
+          <div>
+            <p class="eyebrow">COURSE</p>
+            <h2 id="runCardTitle">Course</h2>
+            <small id="runCardSubtitle"></small>
+          </div>
+          <span class="section-card-chevron" aria-hidden="true">⌄</span>
+        </summary>
+        <div id="runCardContent" class="section-card-body"></div>
+      </details>
+
+      <section id="timerPanel" class="timer-panel hidden day-confirmable-card" aria-live="polite">
         <div class="timer-topline">
           <div><p class="eyebrow">CHRONO</p><strong id="timerPhase">Prêt</strong></div>
           <span id="timerRep" class="pill">—</span>
@@ -100,8 +130,7 @@
         <label class="auto-toggle"><input id="autoAdvance" type="checkbox" checked /><span>Enchaîner automatiquement effort ↔ récupération</span></label>
       </section>
 
-
-      <section class="panel compact-panel">
+      <section id="nutritionCard" class="panel compact-panel day-confirmable-card">
         <div class="panel-head"><div><p class="eyebrow">NUTRITION</p><h2>Préserver le muscle</h2></div><span class="pill">hybride</span></div>
         <div class="nutrition-cards">
           <div><strong>160–175 g</strong><span>protéines / jour</span></div>
@@ -110,9 +139,43 @@
         </div>
       </section>
 
-      <section id="dailyTip" class="tip"></section>
+      <section id="feelingCard" class="panel day-card day-confirmable-card feeling-validation-card">
+        <div class="panel-head">
+          <div><p class="eyebrow">FIN DE JOURNÉE</p><h2>Ressenti & validation</h2></div>
+          <span id="dayValidationPill" class="pill">À valider</span>
+        </div>
+        <div id="feelingCardContent"></div>
+      </section>
     </main>
   </div>
+
+
+
+  <dialog id="dayConfirmDialog" class="day-confirm-dialog">
+    <div class="settings-card day-confirm-card">
+      <div class="panel-head">
+        <div><p class="eyebrow">VALIDER LA JOURNÉE</p><h2 id="dayConfirmTitle">Confirmer cette journée ?</h2></div>
+        <button id="closeDayConfirm" class="icon-button" type="button" aria-label="Fermer">✕</button>
+      </div>
+      <div id="dayConfirmContent"></div>
+      <div class="dialog-actions">
+        <button id="cancelDayConfirm" class="secondary-button" type="button">Annuler</button>
+        <button id="confirmDay" class="primary-button" type="button">Confirmer la journée</button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="dayUnconfirmDialog" class="day-confirm-dialog">
+    <div class="settings-card day-confirm-card">
+      <p class="eyebrow">ANNULER LA CONFIRMATION</p>
+      <h2>Réouvrir cette journée ?</h2>
+      <p class="microcopy">Tes séries, reps, charges et ton ressenti sont conservés. Seul le statut « journée confirmée » sera retiré.</p>
+      <div class="dialog-actions">
+        <button id="cancelDayUnconfirm" class="secondary-button" type="button">Garder confirmée</button>
+        <button id="confirmDayUnconfirm" class="primary-button" type="button">Annuler la confirmation</button>
+      </div>
+    </div>
+  </dialog>
 
   <dialog id="settingsDialog">
     <form method="dialog" class="settings-card">
@@ -159,7 +222,7 @@
 
   <script>
     (() => {
-      const BUILD = "20260919-0115-1";
+      const BUILD = "20260919-0128-1";
       const currentUrl = new URL(window.location.href);
 
       fetch(`./version.json?t=${Date.now()}`, { cache: "no-store" })
@@ -191,11 +254,11 @@
       }));
     })();
   </script>
-  <script src="./app.js?v=20260919-0115-1"></script>
-  <script src="./strength-ux.js?v=20260919-0115-1"></script>
-  <script src="./day-ux.js?v=20260919-0115-1"></script>
-  <script src="./week-flow.js?v=20260919-0115-1"></script>
-  <script src="./email-summary.js?v=20260919-0115-1"></script>
+  <script src="./app.js?v=20260919-0128-1"></script>
+  <script src="./strength-ux.js?v=20260919-0128-1"></script>
+  <script src="./day-ux.js?v=20260919-0128-1"></script>
+  <script src="./week-flow.js?v=20260919-0128-1"></script>
+  <script src="./email-summary.js?v=20260919-0128-1"></script>
   <script>
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
