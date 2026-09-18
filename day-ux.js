@@ -199,6 +199,11 @@
     const day = getDay(selectedDay);
     const prefix = `d${selectedDay}`;
 
+    const programAccordion = document.getElementById("programAccordion");
+    if (programAccordion) {
+      programAccordion.classList.toggle("hidden", selectedDay !== 0);
+    }
+
     // Legacy training header is no longer used, but keep IDs harmless if other code reads them.
     const trainingTitle = document.getElementById("trainingTitle");
     const trainingBadge = document.getElementById("trainingBadge");
