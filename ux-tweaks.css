@@ -861,3 +861,170 @@ dialog {
 #trainingContent:empty {
   display: none;
 }
+
+
+/* Refined disclosure icons: thin chevrons instead of text glyphs. */
+.accordion-chevron,
+.section-card-chevron,
+.training-section-chevron {
+  position: relative;
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+  color: transparent !important;
+  font-size: 0 !important;
+}
+
+.accordion-chevron::before,
+.section-card-chevron::before,
+.training-section-chevron::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 7px;
+  height: 7px;
+  border-right: 1.5px solid #98a2b3;
+  border-bottom: 1.5px solid #98a2b3;
+  transform: translate(-50%, -62%) rotate(45deg);
+  transform-origin: center;
+  transition: transform .16s ease, border-color .16s ease;
+}
+
+.accordion-status[open] .accordion-chevron,
+.section-card-accordion[open] .section-card-chevron,
+.training-section-accordion[open] .training-section-chevron {
+  transform: none;
+}
+
+.accordion-status[open] .accordion-chevron::before,
+.section-card-accordion[open] .section-card-chevron::before,
+.training-section-accordion[open] .training-section-chevron::before {
+  transform: translate(-50%, -38%) rotate(225deg);
+}
+
+/* Cleaner native selects with a consistent minimal chevron. */
+.recovery-grid select,
+#settingsDialog select {
+  -webkit-appearance: none;
+  appearance: none;
+  padding-right: 34px;
+  background-image:
+    linear-gradient(45deg, transparent 50%, #98a2b3 50%),
+    linear-gradient(135deg, #98a2b3 50%, transparent 50%);
+  background-position:
+    calc(100% - 16px) 50%,
+    calc(100% - 11px) 50%;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+}
+
+/* Quick check becomes a nearly invisible utility row when closed. */
+#recoveryAccordion {
+  margin: 0 0 6px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+#recoveryAccordion > .section-card-summary {
+  min-height: 30px;
+  padding: 3px 2px;
+  border: 0;
+  background: transparent;
+}
+
+#recoveryAccordion > .section-card-summary > div {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+#recoveryAccordion > .section-card-summary .eyebrow,
+#recoveryAccordion > .section-card-summary small {
+  display: none;
+}
+
+#recoveryAccordion > .section-card-summary h2 {
+  margin: 0;
+  color: #98a2b3;
+  font-size: .67rem;
+  font-weight: 750;
+  letter-spacing: 0;
+}
+
+#recoveryAccordion > .section-card-summary .section-card-chevron {
+  width: 16px;
+  height: 16px;
+  flex-basis: 16px;
+  opacity: .75;
+}
+
+#recoveryAccordion > .section-card-summary .section-card-chevron::before {
+  width: 6px;
+  height: 6px;
+  border-width: 1.25px;
+}
+
+#recoveryAccordion[open] {
+  margin-bottom: 10px;
+  border: 1px solid rgba(228,231,236,.72);
+  border-radius: 13px;
+  background: rgba(255,255,255,.62);
+}
+
+#recoveryAccordion[open] > .section-card-summary {
+  min-height: 36px;
+  padding: 6px 9px;
+  border-bottom: 1px solid rgba(228,231,236,.65);
+}
+
+#recoveryAccordion[open] > .section-card-summary h2 {
+  color: var(--muted);
+  font-size: .72rem;
+}
+
+#recoveryAccordion > .section-card-body {
+  padding: 10px;
+}
+
+#recoveryAccordion .recovery-grid {
+  gap: 6px;
+}
+
+#recoveryAccordion .recovery-grid label {
+  font-size: .67rem;
+}
+
+#recoveryAccordion .recovery-grid input,
+#recoveryAccordion .recovery-grid select {
+  min-height: 40px;
+  border-radius: 10px;
+  font-size: .78rem;
+}
+
+#recoveryAccordion .microcopy {
+  margin-top: 4px;
+  font-size: .66rem;
+}
+
+/* Exercise accordions: replace the old text arrow too. */
+.exercise summary::after {
+  content: "";
+  width: 7px;
+  height: 7px;
+  flex: 0 0 7px;
+  margin-left: 8px;
+  border-right: 1.5px solid #98a2b3;
+  border-bottom: 1.5px solid #98a2b3;
+  transform: rotate(45deg);
+  transition: transform .16s ease;
+}
+
+.exercise[open] summary::after {
+  transform: rotate(225deg);
+}
