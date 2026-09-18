@@ -130,7 +130,28 @@
         };
         weight.addEventListener("change", saveWeight);
         weight.addEventListener("blur", saveWeight);
-        weightLabel.appendChild(weight);
+
+        const weightInputWrap = document.createElement("div");
+        weightInputWrap.className = "weight-input-wrap";
+
+        const commaButton = document.createElement("button");
+        commaButton.type = "button";
+        commaButton.className = "decimal-comma-button";
+        commaButton.textContent = ",";
+        commaButton.setAttribute("aria-label", "Ajouter une virgule décimale");
+        commaButton.addEventListener("pointerdown", (event) => event.preventDefault());
+        commaButton.addEventListener("click", () => {
+          weight.focus({ preventScroll: true });
+          const start = weight.selectionStart ?? weight.value.length;
+          const end = weight.selectionEnd ?? start;
+          const base = weight.value.slice(0, start) + weight.value.slice(end);
+          if (base.includes(",") || base.includes(".")) return;
+          weight.setRangeText(",", start, end, "end");
+          weight.dispatchEvent(new Event("input", { bubbles: true }));
+        });
+
+        weightInputWrap.append(weight, commaButton);
+        weightLabel.appendChild(weightInputWrap);
 
         const repsLabel = document.createElement("label");
         repsLabel.className = "mini-field";
