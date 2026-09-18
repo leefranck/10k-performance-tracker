@@ -92,6 +92,30 @@
         const weightKey = `${prefix}-ex-${ei}-set-${s}-weight`;
         const storedWeight = stateGet(weightKey, "");
         weight.value = storedWeight === "" ? "" : String(storedWeight).replace(".", ",");
+        weight.pattern = "[0-9]*([,.][0-9]*)?";
+        weight.addEventListener("beforeinput", (event) => {
+          if (event.inputType !== "insertText") return;
+          if (event.data !== "," && event.data !== ".") return;
+          event.preventDefault();
+          const start = weight.selectionStart ?? weight.value.length;
+          const end = weight.selectionEnd ?? start;
+          const withoutSelection = weight.value.slice(0, start) + weight.value.slice(end);
+          if (withoutSelection.includes(",") || withoutSelection.includes(".")) return;
+          weight.setRangeText(",", start, end, "end");
+          weight.dispatchEvent(new Event("input", { bubbles: true }));
+        });
+        weight.addEventListener("input", () => {
+          let next = weight.value.replace(/\./g, ",").replace(/[^0-9,]/g, "");
+          const firstComma = next.indexOf(",");
+          if (firstComma !== -1) {
+            next = next.slice(0, firstComma + 1) + next.slice(firstComma + 1).replace(/,/g, "");
+          }
+          if (next !== weight.value) {
+            const caret = Math.min(weight.selectionStart ?? next.length, next.length);
+            weight.value = next;
+            try { weight.setSelectionRange(caret, caret); } catch {}
+          }
+        });
         const saveWeight = () => {
           const raw = weight.value.trim().replace(",", ".");
           if (raw === "") {
