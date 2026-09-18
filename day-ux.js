@@ -189,6 +189,11 @@
   const originalRenderDayNav = renderDayNav;
   renderDayNav = function renderDayNavWithConfirmation() {
     originalRenderDayNav();
+    const programAccordion = document.getElementById("programAccordion");
+    if (programAccordion) {
+      programAccordion.style.display = selectedDay === 0 ? "" : "none";
+      if (selectedDay !== 0) programAccordion.removeAttribute("open");
+    }
     [1,2,3,4,5,6,0].forEach((dayId, index) => {
       const button = document.getElementById("dayNav").children[index];
       if (button && Boolean(stateGet(`d${dayId}-day-validated`))) button.classList.add("confirmed-day");
@@ -201,7 +206,8 @@
 
     const programAccordion = document.getElementById("programAccordion");
     if (programAccordion) {
-      programAccordion.classList.toggle("hidden", selectedDay !== 0);
+      programAccordion.style.display = selectedDay === 0 ? "" : "none";
+      if (selectedDay !== 0) programAccordion.removeAttribute("open");
     }
 
     // Legacy training header is no longer used, but keep IDs harmless if other code reads them.
