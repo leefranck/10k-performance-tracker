@@ -110,9 +110,6 @@
     document.getElementById("trainingBadge").textContent = day.type;
     content.innerHTML = "";
 
-    // Daily feedback and validation are deliberately first.
-    content.appendChild(renderDailyCheck(prefix));
-
     if (day.kind === "simple") {
       content.appendChild(makeSection({
         id: "football",
@@ -120,6 +117,14 @@
         title: "Football",
         subtitle: "Séance haute intensité",
         content: simpleChecklist(prefix, ["Échauffement / mobilité", "Séance de foot terminée", "Retour au calme / hydratation"]),
+        defaultOpen: true
+      }));
+      content.appendChild(makeSection({
+        id: "feeling",
+        icon: "🧠",
+        title: "Ressenti & validation",
+        subtitle: "Comment tu te sens après ta journée ?",
+        content: renderDailyCheck(prefix),
         defaultOpen: true
       }));
       return;
@@ -134,6 +139,14 @@
         content: simpleChecklist(prefix, ["Repos respecté", "Hydratation correcte", "7–9 h de sommeil visées"]),
         defaultOpen: true
       }));
+      content.appendChild(makeSection({
+        id: "feeling",
+        icon: "🧠",
+        title: "Ressenti & validation",
+        subtitle: "Comment tu te sens après ta journée ?",
+        content: renderDailyCheck(prefix),
+        defaultOpen: true
+      }));
       return;
     }
 
@@ -144,6 +157,14 @@
         title: "Course",
         subtitle: day.title,
         content: renderRunCard(day.run, prefix, { quality: true }),
+        defaultOpen: true
+      }));
+      content.appendChild(makeSection({
+        id: "feeling",
+        icon: "🧠",
+        title: "Ressenti & validation",
+        subtitle: "Comment tu te sens après ta journée ?",
+        content: renderDailyCheck(prefix),
         defaultOpen: true
       }));
       return;
@@ -158,6 +179,14 @@
         content: renderRunCard(day.run, prefix),
         defaultOpen: true
       }));
+      content.appendChild(makeSection({
+        id: "feeling",
+        icon: "🧠",
+        title: "Ressenti & validation",
+        subtitle: "Comment tu te sens après ta journée ?",
+        content: renderDailyCheck(prefix),
+        defaultOpen: true
+      }));
       return;
     }
 
@@ -168,6 +197,14 @@
         title: "Musculation",
         subtitle: STRENGTH[day.strength].title,
         content: renderStrength(day.strength, prefix),
+        defaultOpen: true
+      }));
+      content.appendChild(makeSection({
+        id: "feeling",
+        icon: "🧠",
+        title: "Ressenti & validation",
+        subtitle: "Comment tu te sens après ta journée ?",
+        content: renderDailyCheck(prefix),
         defaultOpen: true
       }));
       return;
@@ -190,6 +227,15 @@
         subtitle: day.run.title,
         content: renderRunCard(day.run, `${prefix}-run`),
         defaultOpen: false
+      }));
+
+      content.appendChild(makeSection({
+        id: "feeling",
+        icon: "🧠",
+        title: "Ressenti & validation",
+        subtitle: "Comment tu te sens après ta journée ?",
+        content: renderDailyCheck(prefix),
+        defaultOpen: true
       }));
     }
   };
