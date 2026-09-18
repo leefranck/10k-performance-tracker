@@ -1046,3 +1046,36 @@ dialog {
     font-size: 16px !important;
   }
 }
+
+
+/* Guaranteed decimal comma control for iOS weight inputs. */
+.weight-input-wrap {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 38px;
+  gap: 5px;
+  align-items: stretch;
+}
+
+.weight-input-wrap > input {
+  min-width: 0;
+}
+
+.decimal-comma-button {
+  min-width: 38px;
+  min-height: 42px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #f8fafc;
+  color: var(--text);
+  font-size: 1.05rem;
+  font-weight: 900;
+  line-height: 1;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.decimal-comma-button:active {
+  background: #eef2ff;
+}
