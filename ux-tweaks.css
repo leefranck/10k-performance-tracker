@@ -379,3 +379,71 @@ dialog {
   .compact-status-summary { gap: 5px; padding-inline: 7px; }
   .accordion-main .muted { display: none; }
 }
+
+
+/* Strength UX: stable accordion selection + full exercise completion state. */
+.strength-exercise-stack {
+  gap: 12px;
+}
+
+.exercise summary .exercise-title-wrap {
+  display: inline-flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  column-gap: 14px;
+  row-gap: 5px;
+  min-width: 0;
+}
+
+.exercise summary .exercise-name {
+  min-width: 0;
+}
+
+.exercise-done-badge {
+  flex: 0 0 auto;
+  margin-left: auto;
+  padding: 4px 7px;
+  border-radius: 999px;
+  background: #dcfce7;
+  color: #166534;
+  font-size: .65rem;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.exercise.is-complete {
+  border-color: #86efac;
+  background: #f0fdf4;
+  box-shadow: inset 0 0 0 1px rgba(34, 197, 94, .06);
+}
+
+.exercise.is-complete > summary {
+  background: #ecfdf3;
+  color: #166534;
+}
+
+.exercise.is-complete .exercise-sub {
+  color: #15803d;
+}
+
+.exercise.is-complete .exercise-body {
+  background: rgba(240, 253, 244, .68);
+}
+
+.exercise .set-row.is-set-done {
+  background: rgba(240, 253, 244, .55);
+}
+
+@media (max-width: 420px) {
+  .exercise summary {
+    align-items: flex-start;
+  }
+
+  .exercise summary .exercise-title-wrap {
+    column-gap: 12px;
+  }
+
+  .exercise-done-badge {
+    margin-top: 1px;
+  }
+}
