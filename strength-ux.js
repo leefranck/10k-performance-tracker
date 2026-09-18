@@ -86,12 +86,26 @@
         weightLabel.textContent = "kg";
 
         const weight = document.createElement("input");
-        weight.type = "number";
+        weight.type = "text";
         weight.inputMode = "decimal";
-        weight.step = "0.5";
-        weight.min = "0";
-        weight.value = stateGet(`${prefix}-ex-${ei}-set-${s}-weight`, "");
-        weight.addEventListener("change", () => stateSet(`${prefix}-ex-${ei}-set-${s}-weight`, weight.value));
+        weight.autocomplete = "off";
+        const weightKey = `${prefix}-ex-${ei}-set-${s}-weight`;
+        const storedWeight = stateGet(weightKey, "");
+        weight.value = storedWeight === "" ? "" : String(storedWeight).replace(".", ",");
+        const saveWeight = () => {
+          const raw = weight.value.trim().replace(",", ".");
+          if (raw === "") {
+            stateSet(weightKey, "");
+            return;
+          }
+          const parsed = Number(raw);
+          if (!Number.isFinite(parsed) || parsed < 0) return;
+          const normalized = String(parsed);
+          stateSet(weightKey, normalized);
+          weight.value = normalized.replace(".", ",");
+        };
+        weight.addEventListener("change", saveWeight);
+        weight.addEventListener("blur", saveWeight);
         weightLabel.appendChild(weight);
 
         const repsLabel = document.createElement("label");
