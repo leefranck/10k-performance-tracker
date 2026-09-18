@@ -82,3 +82,28 @@ skills/ux/SKILL.md
 skills/design/SKILL.md
 README.md
 ```
+
+
+## Règle non négociable — préservation des données
+
+Toute évolution de l'application doit préserver intégralement les données déjà saisies par l'utilisateur.
+
+Cela inclut notamment :
+- charges et poids saisis ;
+- répétitions ;
+- séries validées ;
+- journées confirmées ;
+- ressenti ;
+- récupération ;
+- PB / réglages ;
+- historique des semaines ;
+- progression de bloc et semaine active.
+
+Interdictions :
+- ne jamais changer de clé `localStorage` sans migration explicite ;
+- ne jamais réinitialiser `tenk-hybrid-performance-v2` lors d'une mise à jour ;
+- ne jamais recréer la semaine active si des données existent déjà ;
+- ne jamais supprimer ou remplacer une structure de données existante sans migration rétrocompatible ;
+- une mise à jour PWA / service worker / cache ne doit jamais toucher aux données utilisateur.
+
+Si le modèle de données doit évoluer, une migration rétrocompatible doit être exécutée avant le nouveau comportement, et les données existantes doivent rester lisibles après migration.
