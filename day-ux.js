@@ -6,6 +6,21 @@
   };
 
   let pendingDayAction = null;
+  const CARD_STATE_PREFIX = "tenk-card-open";
+
+  function cardStateKey(id) {
+    const weekKey = currentWeek()?.key || store.activeWeekKey || "current";
+    return `${CARD_STATE_PREFIX}:${weekKey}:${selectedDay}:${id}`;
+  }
+
+  function getSavedCardOpen(id, fallback) {
+    const saved = sessionStorage.getItem(cardStateKey(id));
+    return saved === null ? fallback : saved === "1";
+  }
+
+  function saveCardOpen(id, open) {
+    sessionStorage.setItem(cardStateKey(id), open ? "1" : "0");
+  }
 
   function dailyKey(suffix) {
     return `d${selectedDay}-${suffix}`;
@@ -32,7 +47,7 @@
   function showSection(id, open = true) {
     const el = document.getElementById(id);
     el.classList.remove("hidden");
-    el.open = open;
+    el.open = getSavedCardOpen(id, open);
     return el;
   }
 
@@ -244,6 +259,13 @@
   document.getElementById("confirmDayUnconfirm").addEventListener("click", () => {
     document.getElementById("dayUnconfirmDialog").close();
     if (pendingDayAction === "unconfirm") setDayConfirmed(false);
+  });
+
+  ["activityCard", "strengthCard", "runCard", "recoveryAccordion"].forEach((id) => {
+    const card = document.getElementById(id);
+    card?.addEventListener("toggle", () => {
+      if (!card.classList.contains("hidden")) saveCardOpen(id, card.open);
+    });
   });
 
   render();
