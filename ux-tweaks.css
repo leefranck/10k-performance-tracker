@@ -679,3 +679,185 @@ dialog {
 .training-section-accordion:has(.daily-check-card) .daily-check-head {
   margin-bottom: 2px;
 }
+
+
+/* Day layout v3: independent cards, no monolithic "Séance" container. */
+.day-top-tip {
+  margin-bottom: 10px;
+}
+
+.day-card {
+  margin-bottom: 10px;
+}
+
+.section-card-accordion {
+  padding: 0;
+  overflow: hidden;
+}
+
+.section-card-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 66px;
+  padding: 14px 16px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.section-card-summary::-webkit-details-marker { display: none; }
+.section-card-summary::marker { content: ""; }
+
+.section-card-summary h2 {
+  margin: 1px 0 0;
+  font-size: 1rem;
+}
+
+.section-card-summary small {
+  display: block;
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: .68rem;
+}
+
+.section-card-chevron {
+  color: var(--muted);
+  transition: transform .16s ease;
+}
+
+.section-card-accordion[open] .section-card-chevron {
+  transform: rotate(180deg);
+}
+
+.section-card-accordion[open] > .section-card-summary {
+  border-bottom: 1px solid var(--border);
+}
+
+.section-card-body {
+  padding: 14px;
+}
+
+.feeling-validation-card {
+  margin-top: 10px;
+  margin-bottom: calc(14px + env(safe-area-inset-bottom));
+}
+
+.feeling-validation-card #feelingCardContent {
+  display: grid;
+  gap: 12px;
+}
+
+.daily-validate-button.confirmed {
+  border-color: #ef4444;
+  color: #b42318;
+  background: #fff;
+}
+
+#dayValidationPill.confirmed {
+  border-color: #86efac;
+  background: #dcfce7;
+  color: #166534;
+}
+
+/* Confirmed day: give every main card a consistent green success treatment. */
+#dayMain.is-day-confirmed .day-confirmable-card {
+  border-color: #86efac !important;
+  background: #f0fdf4 !important;
+  box-shadow: 0 8px 24px rgba(22, 101, 52, .06);
+}
+
+#dayMain.is-day-confirmed .section-card-summary,
+#dayMain.is-day-confirmed .section-card-body {
+  background: transparent;
+}
+
+#dayMain.is-day-confirmed .day-hero {
+  border-color: #86efac;
+  background: #f0fdf4;
+}
+
+.day-btn.confirmed-day {
+  border-color: #86efac;
+  background: #dcfce7;
+  color: #166534;
+}
+
+.day-btn.active.confirmed-day {
+  box-shadow: inset 0 0 0 1px #22c55e;
+}
+
+.day-confirm-dialog {
+  width: min(calc(100vw - 24px), 560px);
+  max-height: calc(100dvh - 24px);
+}
+
+.day-confirm-card {
+  display: grid;
+  gap: 12px;
+}
+
+.day-confirm-summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  gap: 8px;
+}
+
+.day-confirm-summary span {
+  padding: 10px;
+  border-radius: 12px;
+  background: #f8fafc;
+  color: var(--muted);
+  font-size: .7rem;
+}
+
+.day-confirm-summary strong {
+  display: block;
+  margin-top: 2px;
+  color: var(--text);
+  font-size: .82rem;
+}
+
+.day-missing-block {
+  padding: 11px 12px;
+  border: 1px solid #fedf89;
+  border-radius: 13px;
+  background: #fffaeb;
+}
+
+.day-missing-block > strong {
+  color: #854a0e;
+  font-size: .78rem;
+}
+
+.day-missing-block ul {
+  margin: 7px 0 0;
+  padding-left: 18px;
+  color: #854a0e;
+  font-size: .72rem;
+  line-height: 1.5;
+}
+
+.day-confirm-warning,
+.day-confirm-success {
+  margin: 0;
+  padding: 10px 11px;
+  border-radius: 12px;
+  font-size: .72rem;
+  line-height: 1.4;
+}
+
+.day-confirm-warning {
+  background: #fff4e5;
+  color: #9a3412;
+}
+
+.day-confirm-success {
+  background: #ecfdf3;
+  color: #166534;
+}
+
+/* Hide obsolete generic training shell if a cached old node somehow remains. */
+#trainingContent:empty {
+  display: none;
+}
