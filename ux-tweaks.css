@@ -645,3 +645,37 @@ dialog {
     padding-inline: 11px;
   }
 }
+
+
+/* Top quick recovery check */
+.recovery-top-accordion {
+  margin-bottom: 10px;
+}
+
+.recovery-top-accordion > .training-section-summary {
+  background: #fff;
+}
+
+.recovery-top-accordion .training-section-body {
+  display: grid;
+  gap: 10px;
+}
+
+/* Feedback is now an end-of-day section, not the first card. */
+.training-section-accordion:has(.daily-check-card) {
+  margin-top: 2px;
+}
+
+.training-section-accordion:has(.daily-check-card) .daily-check-card {
+  border: 0;
+  padding: 0;
+  background: transparent;
+}
+
+.training-section-accordion:has(.daily-check-card) .daily-check-card.is-validated {
+  background: transparent;
+}
+
+.training-section-accordion:has(.daily-check-card) .daily-check-head {
+  margin-bottom: 2px;
+}
