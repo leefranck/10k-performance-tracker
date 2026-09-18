@@ -8,10 +8,10 @@
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
   <title>10K Hybrid Performance</title>
-  <link rel="stylesheet" href="./styles.css?v=20260919-0430-1" />
-  <link rel="stylesheet" href="./ux-tweaks.css?v=20260919-0430-1" />
-  <link rel="stylesheet" href="./week-flow.css?v=20260919-0430-1" />
-  <link rel="stylesheet" href="./email-summary.css?v=20260919-0430-1" />
+  <link rel="stylesheet" href="./styles.css?v=20260919-0445-1" />
+  <link rel="stylesheet" href="./ux-tweaks.css?v=20260919-0445-1" />
+  <link rel="stylesheet" href="./week-flow.css?v=20260919-0445-1" />
+  <link rel="stylesheet" href="./email-summary.css?v=20260919-0445-1" />
 </head>
 <body>
   <div class="app-shell">
@@ -61,8 +61,8 @@
       <details id="recoveryAccordion" class="panel day-card day-confirmable-card section-card-accordion">
         <summary class="section-card-summary">
           <div>
-            <p class="eyebrow">RÉCUPÉRATION</p>
-            <div class="section-title-row"><span class="section-emoji" aria-hidden="true">🌙</span><h2>Check rapide</h2></div>
+            <p class="eyebrow">🌙 RÉCUPÉRATION</p>
+            <div class="section-title-row"><h2>Check rapide</h2></div>
             <small>Sommeil · énergie · jambes</small>
           </div>
           <span class="section-card-chevron" aria-hidden="true"></span>
@@ -82,8 +82,8 @@
       <details id="activityCard" class="panel day-card day-confirmable-card section-card-accordion hidden">
         <summary class="section-card-summary">
           <div>
-            <p class="eyebrow">ACTIVITÉ</p>
-            <div class="section-title-row"><span class="section-emoji" aria-hidden="true">⚡️</span><h2 id="activityTitle">Activité</h2></div>
+            <p class="eyebrow">⚡️ ACTIVITÉ</p>
+            <div class="section-title-row"><h2 id="activityTitle">Activité</h2></div>
             <small id="activitySubtitle"></small>
           </div>
           <span class="section-card-chevron" aria-hidden="true"></span>
@@ -94,8 +94,8 @@
       <details id="strengthCard" class="panel day-card day-confirmable-card section-card-accordion hidden">
         <summary class="section-card-summary">
           <div>
-            <p class="eyebrow">MUSCULATION</p>
-            <div class="section-title-row"><span class="section-emoji" aria-hidden="true">🏋️</span><h2 id="strengthCardTitle">Musculation</h2></div>
+            <p class="eyebrow">🏋️ MUSCULATION</p>
+            <div class="section-title-row"><h2 id="strengthCardTitle">Musculation</h2></div>
             <small id="strengthCardSubtitle"></small>
           </div>
           <span class="section-card-chevron" aria-hidden="true"></span>
@@ -106,8 +106,8 @@
       <details id="runCard" class="panel day-card day-confirmable-card section-card-accordion hidden">
         <summary class="section-card-summary">
           <div>
-            <p class="eyebrow">COURSE</p>
-            <div class="section-title-row"><span class="section-emoji" aria-hidden="true">🏃</span><h2 id="runCardTitle">Course</h2></div>
+            <p class="eyebrow">🏃 COURSE</p>
+            <div class="section-title-row"><h2 id="runCardTitle">Course</h2></div>
             <small id="runCardSubtitle"></small>
           </div>
           <span class="section-card-chevron" aria-hidden="true"></span>
@@ -131,7 +131,7 @@
       </section>
 
       <section id="nutritionCard" class="panel compact-panel day-confirmable-card">
-        <div class="panel-head"><div><p class="eyebrow">NUTRITION</p><div class="section-title-row"><span class="section-emoji" aria-hidden="true">🥗</span><h2>Préserver le muscle</h2></div></div><span class="pill">hybride</span></div>
+        <div class="panel-head"><div><p class="eyebrow">🥗 NUTRITION</p><div class="section-title-row"><h2>Préserver le muscle</h2></div></div><span class="pill">hybride</span></div>
         <div class="nutrition-cards">
           <div><strong>160–175 g</strong><span>protéines / jour</span></div>
           <div><strong>Glucides</strong><span>autour des séances clés</span></div>
@@ -141,7 +141,7 @@
 
       <section id="feelingCard" class="panel day-card day-confirmable-card feeling-validation-card">
         <div class="panel-head">
-          <div><p class="eyebrow">FIN DE JOURNÉE</p><div class="section-title-row"><span class="section-emoji" aria-hidden="true">💬</span><h2>Ressenti & validation</h2></div></div>
+          <div><p class="eyebrow">💬 FIN DE JOURNÉE</p><div class="section-title-row"><h2>Ressenti & validation</h2></div></div>
           <span id="dayValidationPill" class="pill">À valider</span>
         </div>
         <div id="feelingCardContent"></div>
@@ -222,7 +222,7 @@
 
   <script>
     (() => {
-      const BUILD = "20260919-0430-1";
+      const BUILD = "20260919-0445-1";
       const currentUrl = new URL(window.location.href);
 
       fetch(`./version.json?t=${Date.now()}`, { cache: "no-store" })
@@ -254,11 +254,11 @@
       }));
     })();
   </script>
-  <script src="./app.js?v=20260919-0430-1"></script>
-  <script src="./strength-ux.js?v=20260919-0430-1"></script>
-  <script src="./day-ux.js?v=20260919-0430-1"></script>
-  <script src="./week-flow.js?v=20260919-0430-1"></script>
-  <script src="./email-summary.js?v=20260919-0430-1"></script>
+  <script src="./app.js?v=20260919-0445-1"></script>
+  <script src="./strength-ux.js?v=20260919-0445-1"></script>
+  <script src="./day-ux.js?v=20260919-0445-1"></script>
+  <script src="./week-flow.js?v=20260919-0445-1"></script>
+  <script src="./email-summary.js?v=20260919-0445-1"></script>
   <script>
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
