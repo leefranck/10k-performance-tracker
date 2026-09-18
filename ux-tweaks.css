@@ -1079,3 +1079,42 @@ dialog {
 .decimal-comma-button:active {
   background: #eef2ff;
 }
+
+
+/* Friendly section markers: quick visual recognition without adding visual weight. */
+.section-title-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+}
+
+.section-title-row h2 {
+  min-width: 0;
+}
+
+.section-emoji {
+  display: inline-grid;
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+  place-items: center;
+  border-radius: 8px;
+  background: #f8fafc;
+  font-size: .9rem;
+  line-height: 1;
+}
+
+/* Keep the intentionally subtle recovery shortcut subtle. */
+#recoveryAccordion > .section-card-summary .section-title-row {
+  gap: 5px;
+}
+
+#recoveryAccordion > .section-card-summary .section-emoji {
+  width: 18px;
+  height: 18px;
+  flex-basis: 18px;
+  border-radius: 6px;
+  background: transparent;
+  font-size: .72rem;
+}
