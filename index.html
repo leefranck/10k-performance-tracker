@@ -8,10 +8,10 @@
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
   <title>10K Hybrid Performance</title>
-  <link rel="stylesheet" href="./styles.css?v=20260919-0245-1" />
-  <link rel="stylesheet" href="./ux-tweaks.css?v=20260919-0245-1" />
-  <link rel="stylesheet" href="./week-flow.css?v=20260919-0245-1" />
-  <link rel="stylesheet" href="./email-summary.css?v=20260919-0245-1" />
+  <link rel="stylesheet" href="./styles.css?v=20260919-0310-1" />
+  <link rel="stylesheet" href="./ux-tweaks.css?v=20260919-0310-1" />
+  <link rel="stylesheet" href="./week-flow.css?v=20260919-0310-1" />
+  <link rel="stylesheet" href="./email-summary.css?v=20260919-0310-1" />
 </head>
 <body>
   <div class="app-shell">
@@ -35,7 +35,7 @@
           <span id="blockWeek" class="muted"></span>
         </div>
         <div class="accordion-progress"><strong id="globalPercent">0%</strong><span id="globalCount" class="muted">0 / 0</span></div>
-        <span class="accordion-chevron" aria-hidden="true">⌄</span>
+        <span class="accordion-chevron" aria-hidden="true"></span>
       </summary>
       <div class="compact-status-body">
         <p id="blockDescription" class="microcopy"></p>
@@ -65,7 +65,7 @@
             <h2>Check rapide</h2>
             <small>Sommeil · énergie · jambes</small>
           </div>
-          <span class="section-card-chevron" aria-hidden="true">⌄</span>
+          <span class="section-card-chevron" aria-hidden="true"></span>
         </summary>
         <div class="section-card-body">
           <div class="recovery-grid">
@@ -86,7 +86,7 @@
             <h2 id="activityTitle">Activité</h2>
             <small id="activitySubtitle"></small>
           </div>
-          <span class="section-card-chevron" aria-hidden="true">⌄</span>
+          <span class="section-card-chevron" aria-hidden="true"></span>
         </summary>
         <div id="activityContent" class="section-card-body stack"></div>
       </details>
@@ -98,7 +98,7 @@
             <h2 id="strengthCardTitle">Musculation</h2>
             <small id="strengthCardSubtitle"></small>
           </div>
-          <span class="section-card-chevron" aria-hidden="true">⌄</span>
+          <span class="section-card-chevron" aria-hidden="true"></span>
         </summary>
         <div id="strengthCardContent" class="section-card-body"></div>
       </details>
@@ -110,7 +110,7 @@
             <h2 id="runCardTitle">Course</h2>
             <small id="runCardSubtitle"></small>
           </div>
-          <span class="section-card-chevron" aria-hidden="true">⌄</span>
+          <span class="section-card-chevron" aria-hidden="true"></span>
         </summary>
         <div id="runCardContent" class="section-card-body"></div>
       </details>
@@ -222,7 +222,7 @@
 
   <script>
     (() => {
-      const BUILD = "20260919-0245-1";
+      const BUILD = "20260919-0310-1";
       const currentUrl = new URL(window.location.href);
 
       fetch(`./version.json?t=${Date.now()}`, { cache: "no-store" })
@@ -254,11 +254,11 @@
       }));
     })();
   </script>
-  <script src="./app.js?v=20260919-0245-1"></script>
-  <script src="./strength-ux.js?v=20260919-0245-1"></script>
-  <script src="./day-ux.js?v=20260919-0245-1"></script>
-  <script src="./week-flow.js?v=20260919-0245-1"></script>
-  <script src="./email-summary.js?v=20260919-0245-1"></script>
+  <script src="./app.js?v=20260919-0310-1"></script>
+  <script src="./strength-ux.js?v=20260919-0310-1"></script>
+  <script src="./day-ux.js?v=20260919-0310-1"></script>
+  <script src="./week-flow.js?v=20260919-0310-1"></script>
+  <script src="./email-summary.js?v=20260919-0310-1"></script>
   <script>
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
