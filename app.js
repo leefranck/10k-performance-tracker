@@ -195,7 +195,17 @@ function renderModeSwitch(container,prefix,onChange){
   const wrap=document.createElement("div"); wrap.className="mode-switch";
   [["outdoor","Dehors"],["treadmill","Tapis"]].forEach(([value,label])=>{
     const b=document.createElement("button"); b.type="button"; b.textContent=label; b.classList.toggle("active",current===value);
-    b.addEventListener("click",()=>{ stateSet(`${prefix}-mode`,value); onChange(); }); wrap.appendChild(b);
+    b.addEventListener("click",()=>{
+      const activeCard=b.closest("details");
+      const wasOpen=Boolean(activeCard?.open);
+      const scrollY=window.scrollY;
+      stateSet(`${prefix}-mode`,value);
+      onChange();
+      requestAnimationFrame(()=>{
+        if(activeCard && wasOpen) activeCard.open=true;
+        window.scrollTo({top:scrollY,behavior:"auto"});
+      });
+    }); wrap.appendChild(b);
   });
   container.appendChild(wrap); return current;
 }
