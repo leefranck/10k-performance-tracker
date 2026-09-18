@@ -18,6 +18,9 @@ Design every interaction for an athlete who may be tired, sweaty, moving, or usi
 12. Make fatigue safer: if recovery inputs are poor, recommend reducing volume/intensity rather than adding work.
 13. One-handed use matters. Primary actions should be easy to reach on mobile.
 14. Accessibility: visible focus states, sufficient contrast, text labels in addition to color, reduced-motion support.
+15. Never lose previously entered user data during an app update. Existing localStorage data, workout history, weights, reps, completion states, recovery, feelings, settings and active-week state must survive every release.
+16. Any storage-schema change must be backward-compatible. Never change the storage key, reset the store, recreate the active week, or overwrite existing structures without an explicit migration that preserves all existing values.
+17. PWA/service-worker/cache updates must remain completely separate from user data and must never clear or mutate localStorage.
 
 ## Treadmill timer pattern
 - User selects Tapis.
