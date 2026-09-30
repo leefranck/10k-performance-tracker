@@ -1,5 +1,6 @@
 (() => {
   let viewedWeekKey = store.activeWeekKey;
+  let pendingWeekDecision = "advance";
 
   // The training cycle is now advanced only through explicit user validation.
   // Calendar rollovers are intentionally ignored so a missed week never skips training.
@@ -117,6 +118,46 @@
     });
   }
 
+  function weeklyRecommendation(week, stats) {
+    return withViewedWeek(week.key, () => {
+      const recovery = week.recovery || {};
+      const feelings = [1,2,3,4,5,6,0]
+        .map((day) => Number(stateGet(`d${day}-feeling`, 0)))
+        .filter((value) => value >= 1 && value <= 5);
+      const avgFeeling = feelings.length ? feelings.reduce((sum, value) => sum + value, 0) / feelings.length : null;
+      const runRate = stats.runTotal ? stats.runDone / stats.runTotal : 1;
+      const strengthRate = stats.strengthTotal ? stats.strengthDone / stats.strengthTotal : 1;
+      const energy = Number(recovery.energy) || null;
+      const legs = Number(recovery.legs) || null;
+      const sleep = Number(recovery.sleep) || null;
+
+      let score = 0;
+      const reasons = [];
+      if (stats.percent >= 85) { score += 2; reasons.push(`${stats.percent}% du plan validé`); }
+      else if (stats.percent >= 70) { score += 1; reasons.push(`${stats.percent}% du plan validé`); }
+      else { score -= 2; reasons.push(`seulement ${stats.percent}% du plan validé`); }
+
+      if (runRate >= .9) { score += 3; reasons.push("running clé bien réalisé"); }
+      else if (runRate >= .7) { score += 1; reasons.push("running majoritairement réalisé"); }
+      else { score -= 3; reasons.push("trop d’objectifs running manquants"); }
+
+      if (strengthRate >= .75) score += 1;
+      else if (strengthRate < .5) score -= 1;
+
+      if (avgFeeling !== null) {
+        if (avgFeeling >= 3.5) { score += 1; reasons.push(`ressenti moyen ${avgFeeling.toFixed(1)}/5`); }
+        else if (avgFeeling < 2.5) { score -= 2; reasons.push(`ressenti difficile (${avgFeeling.toFixed(1)}/5)`); }
+      }
+      if (energy !== null && energy <= 2) { score -= 1; reasons.push(`énergie basse (${energy}/5)`); }
+      if (legs !== null && legs <= 2) { score -= 2; reasons.push(`jambes fatiguées (${legs}/5)`); }
+      if (sleep !== null && sleep < 6) { score -= 1; reasons.push(`sommeil faible (${sleep} h)`); }
+
+      const hardStop = runRate < .6 || stats.percent < 60 || (legs !== null && legs <= 1) || (avgFeeling !== null && avgFeeling < 2);
+      const action = !hardStop && score >= 2 ? "advance" : "repeat";
+      return { action, score, runRate, strengthRate, avgFeeling, energy, legs, sleep, reasons: reasons.slice(0, 4) };
+    });
+  }
+
   function weekLabel(week) {
     const block = PROGRAM[week.program.block];
     return `${block.name} · Semaine ${week.program.week}/${block.weeks.length}`;
@@ -223,15 +264,30 @@
     if (viewedWeekKey !== store.activeWeekKey) return;
     const week = store.weeks[store.activeWeekKey];
     const stats = completionForWeek(week.key);
+    const recommendation = weeklyRecommendation(week, stats);
+    pendingWeekDecision = recommendation.action;
     const next = nextTrainingPosition(week.program);
     const nextBlock = PROGRAM[next.block];
     const nextPlan = nextBlock.weeks[next.week - 1];
     const recovery = week.recovery || {};
     const missingDays = Math.max(0, 7 - stats.completedDays);
     const changesBlock = next.block !== week.program.block;
+    const recommendationTitle = recommendation.action === "advance"
+      ? `Tu peux passer à la semaine ${next.week}`
+      : `Je te conseille de refaire cette semaine`;
+    const recommendationText = recommendation.action === "advance"
+      ? "Tes performances et ta récupération sont suffisantes pour augmenter progressivement la charge."
+      : "Consolider cette semaine est plus pertinent avant d’augmenter la charge d’entraînement.";
+    const reasonItems = recommendation.reasons.map((reason) => `<li>${reason}</li>`).join("");
 
     document.getElementById("weekRecapTitle").textContent = `Semaine ${week.cycleNumber || "—"} · ${stats.percent}% complétée`;
     document.getElementById("weekRecapContent").innerHTML = `
+      <div class="week-recommendation ${recommendation.action}">
+        <span class="week-recommendation-kicker">RECOMMANDATION</span>
+        <strong>${recommendationTitle}</strong>
+        <p>${recommendationText}</p>
+        <ul>${reasonItems}</ul>
+      </div>
       <div class="recap-score-card">
         <div class="recap-score-main"><strong>${stats.percent}%</strong><span>progression enregistrée</span></div>
         <div class="recap-progress"><span style="width:${stats.percent}%"></span></div>
@@ -246,12 +302,12 @@
         <div class="recap-recovery-row">
           <span>Énergie <strong>${recovery.energy || "—"}/5</strong></span>
           <span>Jambes <strong>${recovery.legs || "—"}/5</strong></span>
-          <span>PB 10 km <strong>${formatTime(store.settings.pbSeconds || BASELINE_10K)}</strong></span>
+          <span>Ressenti <strong>${recommendation.avgFeeling ? recommendation.avgFeeling.toFixed(1) : "—"}/5</strong></span>
         </div>
       </div>
       <div class="recap-section next-week-preview">
         <div class="recap-section-title">
-          <span>Prochaine semaine</span>
+          <span>Si tu progresses</span>
           <small>${nextBlock.name} · Semaine ${next.week}/${nextBlock.weeks.length}${nextPlan.deload ? " · DELOAD" : ""}</small>
         </div>
         <div class="next-week-items">
@@ -260,14 +316,58 @@
           <div><span>Dimanche</span><strong>${nextPlan.long} min</strong><small>sortie longue</small></div>
         </div>
       </div>
-      ${missingDays ? `<p class="recap-warning">${missingDays} jour${missingDays > 1 ? "s" : ""} n'est pas entièrement complété. Tu peux quand même valider si tu veux avancer.</p>` : `<p class="recap-success">Semaine entièrement complétée. Les données seront conservées dans l'historique.</p>`}`;
+      ${missingDays ? `<p class="recap-warning">${missingDays} jour${missingDays > 1 ? "s" : ""} n'est pas entièrement complété.</p>` : `<p class="recap-success">Semaine entièrement complétée. Les données seront conservées dans l'historique.</p>`}`;
 
-    const confirmText = changesBlock
-      ? `Cette validation termine ${PROGRAM[week.program.block].name} et démarre ${nextBlock.name}, semaine 1.`
-      : `Cette validation archive la semaine actuelle et charge immédiatement la semaine ${next.week}.`;
-    document.getElementById("weekRecapConfirmationText").textContent = confirmText;
-    document.getElementById("confirmWeekValidation").textContent = changesBlock ? `Valider & démarrer ${nextBlock.name.replace(/^Bloc \d+ · /, "")}` : "Valider & démarrer la semaine suivante";
+    document.getElementById("weekRecapConfirmationText").textContent =
+      "La recommandation est présélectionnée, mais tu gardes le choix final.";
+    const confirm = document.getElementById("confirmWeekValidation");
+    const cancel = document.getElementById("cancelWeekValidation");
+    if (recommendation.action === "advance") {
+      confirm.textContent = changesBlock ? `Passer à ${nextBlock.name.replace(/^Bloc \d+ · /, "")}` : `Passer à la semaine ${next.week}`;
+      cancel.textContent = "Refaire cette semaine";
+    } else {
+      confirm.textContent = "Refaire cette semaine";
+      cancel.textContent = changesBlock ? `Passer à ${nextBlock.name.replace(/^Bloc \d+ · /, "")}` : `Passer quand même à la semaine ${next.week}`;
+    }
     document.getElementById("weekRecapDialog").showModal();
+  }
+
+  function repeatCurrentTrainingWeek() {
+    const old = store.weeks[store.activeWeekKey];
+    if (!old) return;
+    old.status = "archived";
+    old.validated = true;
+    old.validatedAt = new Date().toISOString();
+    old.completedAt = old.validatedAt;
+    old.pbSnapshot = store.settings.pbSeconds;
+    old.weekDecision = "repeat";
+    old.weekRecommendation = weeklyRecommendation(old, completionForWeek(old.key));
+
+    const newKey = uniqueWeekKey();
+    const repeated = createWeek(newKey, { ...old.program });
+    repeated.cycleNumber = nextCycleNumber();
+    repeated.previousWeekKey = old.key;
+    repeated.repeatedFromWeekKey = old.key;
+    old.nextWeekKey = newKey;
+    store.weeks[newKey] = repeated;
+    store.activeWeekKey = newKey;
+    viewedWeekKey = newKey;
+    saveStore();
+
+    const recap = document.getElementById("weekRecapDialog");
+    if (recap?.open) recap.close();
+    resetTimer();
+    selectedDay = chooseDefaultDay();
+    render();
+    showWeekToast(`Semaine ${repeated.cycleNumber} chargée · même programme pour consolider`);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function applyRecommendedDecision(useRecommended = true) {
+    const recommendation = pendingWeekDecision;
+    const action = useRecommended ? recommendation : (recommendation === "advance" ? "repeat" : "advance");
+    if (action === "repeat") repeatCurrentTrainingWeek();
+    else advanceToNextTrainingWeek();
   }
 
   function advanceToNextTrainingWeek() {
@@ -280,6 +380,8 @@
     old.validatedAt = new Date().toISOString();
     old.completedAt = old.validatedAt;
     old.pbSnapshot = store.settings.pbSeconds;
+    old.weekDecision = "advance";
+    old.weekRecommendation = weeklyRecommendation(old, completionForWeek(old.key));
 
     const newKey = uniqueWeekKey();
     const next = createWeek(newKey, nextPosition);
@@ -355,8 +457,8 @@
     }, true);
 
     document.getElementById("closeWeekRecap").addEventListener("click", () => document.getElementById("weekRecapDialog").close());
-    document.getElementById("cancelWeekValidation").addEventListener("click", () => document.getElementById("weekRecapDialog").close());
-    document.getElementById("confirmWeekValidation").addEventListener("click", advanceToNextTrainingWeek);
+    document.getElementById("cancelWeekValidation").addEventListener("click", () => applyRecommendedDecision(false));
+    document.getElementById("confirmWeekValidation").addEventListener("click", () => applyRecommendedDecision(true));
     document.getElementById("returnCurrentWeek").addEventListener("click", () => viewWeek(store.activeWeekKey));
 
     document.getElementById("previousSavedWeek").addEventListener("click", () => {
