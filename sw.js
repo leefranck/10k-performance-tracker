@@ -1,4 +1,4 @@
-const BUILD = "20260919-0445-1";
+const BUILD = "20261001-0135-1";
 const STATIC_CACHE = `tenk-static-${BUILD}`;
 const RUNTIME_CACHE = `tenk-runtime-${BUILD}`;
 
