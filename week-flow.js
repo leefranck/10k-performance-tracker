@@ -154,7 +154,36 @@
 
       const hardStop = runRate < .6 || stats.percent < 60 || (legs !== null && legs <= 1) || (avgFeeling !== null && avgFeeling < 2);
       const action = !hardStop && score >= 2 ? "advance" : "repeat";
-      return { action, score, runRate, strengthRate, avgFeeling, energy, legs, sleep, reasons: reasons.slice(0, 4) };
+      const runPercent = Math.round(runRate * 100);
+      const strengthPercent = Math.round(strengthRate * 100);
+      const blockers = [];
+      if (runRate < .7) blockers.push({ priority: 100, text: `Tu n’as validé que ${runPercent}% des objectifs running. Passer à une semaine plus exigeante maintenant augmenterait la charge alors que la charge actuelle n’est pas encore maîtrisée.` });
+      if (stats.percent < 70) blockers.push({ priority: 90, text: `Tu as validé ${stats.percent}% du programme total. Il manque encore une part importante de la semaine pour considérer cette charge comme assimilée.` });
+      if (avgFeeling !== null && avgFeeling < 2.5) blockers.push({ priority: 80, text: `Ton ressenti moyen est de ${avgFeeling.toFixed(1)}/5. Même si certaines séances sont passées, elles t’ont coûté trop cher pour augmenter la difficulté tout de suite.` });
+      if (legs !== null && legs <= 2) blockers.push({ priority: 75, text: `Tes jambes sont à ${legs}/5 en récupération. Le frein vient ici surtout de la fatigue résiduelle, pas forcément de ton niveau.` });
+      if (energy !== null && energy <= 2) blockers.push({ priority: 65, text: `Ton énergie est à ${energy}/5, ce qui indique que tu n’as pas encore complètement absorbé la semaine.` });
+      if (sleep !== null && sleep < 6) blockers.push({ priority: 55, text: `Tu déclares ${sleep} h de sommeil. Une récupération aussi courte rend la progression moins fiable cette semaine.` });
+      if (strengthRate < .5) blockers.push({ priority: 35, text: `Seulement ${strengthPercent}% du travail de musculation a été validé. C’est un signal secondaire, mais il réduit la qualité globale de la semaine hybride.` });
+      blockers.sort((a, b) => b.priority - a.priority);
+
+      let diagnosis;
+      let target;
+      if (action === "repeat") {
+        diagnosis = blockers[0]?.text || `Ton score global de progression reste insuffisant malgré certains bons indicateurs. Refaire la semaine permet de vérifier que tu peux maîtriser cette charge de façon reproductible.`;
+        const targets = [];
+        if (runRate < .9) targets.push("valider au moins 90% des objectifs running");
+        if (stats.percent < 85) targets.push("atteindre au moins 85% du programme");
+        if (avgFeeling !== null && avgFeeling < 3.5) targets.push("retrouver un ressenti moyen d’au moins 3,5/5");
+        if (legs !== null && legs < 3) targets.push("retrouver des jambes à au moins 3/5");
+        if (energy !== null && energy < 3) targets.push("retrouver une énergie à au moins 3/5");
+        target = targets.length
+          ? `Pour débloquer la progression : ${targets.slice(0, 3).join(", ")}.`
+          : "Objectif : refaire la charge actuelle avec plus de maîtrise et une récupération stable.";
+      } else {
+        diagnosis = `Tu as suffisamment maîtrisé la charge actuelle : ${runPercent}% du running prévu est validé et tes autres indicateurs ne montrent pas de frein majeur.`;
+        target = "Tu peux augmenter progressivement la charge tout en continuant à surveiller ton ressenti et ta récupération.";
+      }
+      return { action, score, runRate, strengthRate, avgFeeling, energy, legs, sleep, reasons: reasons.slice(0, 4), diagnosis, target, blockers: blockers.map((item) => item.text) };
     });
   }
 
@@ -275,10 +304,11 @@
     const recommendationTitle = recommendation.action === "advance"
       ? `Tu peux passer à la semaine ${next.week}`
       : `Je te conseille de refaire cette semaine`;
-    const recommendationText = recommendation.action === "advance"
-      ? "Tes performances et ta récupération sont suffisantes pour augmenter progressivement la charge."
-      : "Consolider cette semaine est plus pertinent avant d’augmenter la charge d’entraînement.";
+    const recommendationText = recommendation.diagnosis;
     const reasonItems = recommendation.reasons.map((reason) => `<li>${reason}</li>`).join("");
+    const blockersHtml = recommendation.action === "repeat" && recommendation.blockers.length > 1
+      ? `<div class="week-recommendation-details"><span>Autres signaux</span><ul>${recommendation.blockers.slice(1, 3).map((item) => `<li>${item}</li>`).join("")}</ul></div>`
+      : "";
 
     document.getElementById("weekRecapTitle").textContent = `Semaine ${week.cycleNumber || "—"} · ${stats.percent}% complétée`;
     document.getElementById("weekRecapContent").innerHTML = `
@@ -287,6 +317,8 @@
         <strong>${recommendationTitle}</strong>
         <p>${recommendationText}</p>
         <ul>${reasonItems}</ul>
+        ${blockersHtml}
+        <div class="week-recommendation-target"><span>OBJECTIF POUR PROGRESSER</span><strong>${recommendation.target}</strong></div>
       </div>
       <div class="recap-score-card">
         <div class="recap-score-main"><strong>${stats.percent}%</strong><span>progression enregistrée</span></div>
