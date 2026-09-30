@@ -323,11 +323,11 @@
     const confirm = document.getElementById("confirmWeekValidation");
     const cancel = document.getElementById("cancelWeekValidation");
     if (recommendation.action === "advance") {
-      confirm.textContent = changesBlock ? `Passer à ${nextBlock.name.replace(/^Bloc \\d+ · /, "")}` : `Passer à la semaine ${next.week}`;
+      confirm.textContent = changesBlock ? `Passer à ${nextBlock.name.replace(/^Bloc \d+ · /, "")}` : `Passer à la semaine ${next.week}`;
       cancel.textContent = "Refaire cette semaine";
     } else {
       confirm.textContent = "Refaire cette semaine";
-      cancel.textContent = changesBlock ? `Passer à ${nextBlock.name.replace(/^Bloc \\d+ · /, "")}` : `Passer quand même à la semaine ${next.week}`;
+      cancel.textContent = changesBlock ? `Passer à ${nextBlock.name.replace(/^Bloc \d+ · /, "")}` : `Passer quand même à la semaine ${next.week}`;
     }
     document.getElementById("weekRecapDialog").showModal();
   }
