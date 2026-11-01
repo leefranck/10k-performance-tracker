@@ -27,6 +27,7 @@
     const cfg = getStrengthConfig(name);
     const wrap = document.createElement("div");
     wrap.className = "stack strength-exercise-stack";
+    wrap.appendChild(renderRestTimer());
 
     const helper = document.createElement("div");
     helper.className = "soft-card";
@@ -161,7 +162,9 @@
         done.className = `done-btn${isDone ? " is-done" : ""}`;
         done.textContent = isDone ? "✓" : "OK";
         done.addEventListener("click", () => {
-          stateSet(doneKey, !stateGet(doneKey));
+          const completing=!stateGet(doneKey);
+          stateSet(doneKey, completing);
+          if(completing)notifyRestSet(exercise);
           // renderTraining() no longer resets to exercise 1:
           // the explicitly selected exercise is restored from sessionStorage.
           renderTraining();

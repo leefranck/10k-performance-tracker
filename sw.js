@@ -1,4 +1,4 @@
-const BUILD = "20261101-2030-2";
+const BUILD = "20261101-rest-1";
 const STATIC_CACHE = `tenk-static-${BUILD}`;
 const RUNTIME_CACHE = `tenk-runtime-${BUILD}`;
 
@@ -11,6 +11,7 @@ const PRECACHE_URLS = [
   `./email-summary.css?v=${BUILD}`,
   `./app.js?v=${BUILD}`,
   `./adaptive-plan.js?v=${BUILD}`,
+  `./rest-timer.js?v=${BUILD}`,
   `./strength-ux.js?v=${BUILD}`,
   `./day-ux.js?v=${BUILD}`,
   `./week-flow.js?v=${BUILD}`,

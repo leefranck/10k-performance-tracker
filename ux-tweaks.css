@@ -1131,3 +1131,19 @@ dialog {
 .adaptive-plan-row { display:grid; grid-template-columns:40px 1fr; gap:10px; padding:10px 8px; border-bottom:1px solid #e2e8f0; font-size:13px; }
 .adaptive-plan-row.selected { background:#eef2ff; border-radius:8px; }
 .adaptive-notes { font-size:12px; color:#475569; line-height:1.5; }
+
+/* Keep the rest countdown visible while logging strength sets. */
+#strengthCard { overflow:visible; }
+.rest-timer { position:sticky; top:max(8px,env(safe-area-inset-top)); z-index:10; padding:12px; border:1px solid #c7d2fe; border-radius:16px; background:#eef2ff; box-shadow:0 4px 16px #0f172a12; }
+.rest-heading { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.rest-heading small { display:block; color:#64748b; font-size:11px; margin-top:3px; }
+.rest-clock { font-size:30px; font-weight:800; font-variant-numeric:tabular-nums; color:#4338ca; }
+.rest-presets { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; margin:8px 0; }
+.rest-presets button { min-height:44px; border:1px solid #cbd5e1; border-radius:10px; background:white; color:#334155; font:inherit; font-size:12px; }
+.rest-presets button[aria-pressed="true"] { background:#4338ca; color:#fff; border-color:#4338ca; }
+.rest-actions { display:grid; grid-template-columns:auto 1fr auto 44px; gap:6px; }
+.rest-actions button { min-height:44px; min-width:0; padding:8px; font-size:12px; }
+.rest-caption { display:flex; flex-wrap:wrap; justify-content:space-between; gap:4px 10px; font-size:11px; color:#475569; margin-top:7px; }
+.rest-finished { background:#ecfdf5; border-color:#86efac; }
+.rest-finished .rest-clock { color:#15803d; }
+.rest-timer button:focus-visible { outline:3px solid #818cf8; outline-offset:2px; }

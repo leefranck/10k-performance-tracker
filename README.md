@@ -119,3 +119,7 @@ Les trois familles muscu (haut A, bas, haut B) disposent de quatre variations. C
 Le WOD est une séance cardio unique avec chrono guidé, échauffement et retour au calme. Durée habituelle du foot et effort global 6–8/10 servent de repères ; une récupération basse allège le WOD. La comparaison durée × effort ressenti ne prétend pas reproduire les sollicitations physiologiques du football. Référence : https://pubmed.ncbi.nlm.nih.gov/28463642/.
 
 Validation du moteur sans dépendance : `node tests/adaptive-plan.test.cjs` (792 combinaisons de semaines et 3 888 changements après début de séance).
+
+## Chrono de repos musculation
+
+Disponible dans les séances de musculation, visible pendant le défilement. Préréglages 60/90/120/180 secondes, ajustement ±15 secondes, démarrage manuel, pause/reprise et remise à zéro. Valider une série actualise le nom de l’exercice sans lancer ou réinitialiser le chrono. Le délai repose sur une échéance absolue, conservée dans sessionStorage pour survivre au rechargement ; le réglage préféré est enregistré avec les autres réglages. Fin de repos signalée à l’écran, avec son/vibration lorsque le navigateur le permet. Aucun historique de séance n’est modifié par le chrono.
