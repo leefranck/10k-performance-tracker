@@ -82,7 +82,7 @@
       <button id="dailyValidationButton" type="button" ${pending ? "disabled" : ""} class="${confirmed ? "secondary-button daily-validate-button confirmed" : "primary-button daily-validate-button"}">
         ${confirmed ? "Annuler la confirmation" : "Valider la journée"}
       </button>
-      <p class="daily-check-hint">${pending ? "Choisis d’abord foot, course facile ou repos." : confirmed ? "Journée confirmée. Tu peux la réouvrir sans perdre tes données." : "La validation affiche d’abord un récap des éléments réalisés et manquants."}</p>
+      <p class="daily-check-hint">${pending ? "Choisis d’abord foot, WOD, muscu, course ou repos." : confirmed ? "Journée confirmée. Tu peux la réouvrir sans perdre tes données." : "La validation affiche d’abord un récap des éléments réalisés et manquants."}</p>
     `;
 
     target.querySelectorAll(".feeling-button").forEach((button) => {
@@ -113,7 +113,7 @@
     const strengthMissing = [];
     if (day.strength) {
       const prefix = day.kind === "strength-run" ? `d${selectedDay}-strength` : trainingPrefix(selectedDay);
-      STRENGTH[day.strength].exercises.forEach(([exercise, sets], exerciseIndex) => {
+      getStrengthConfig(day.strength).exercises.forEach(([exercise, sets], exerciseIndex) => {
         let done = 0;
         for (let set = 1; set <= sets; set++) {
           if (stateGet(`${prefix}-ex-${exerciseIndex}-set-${set}-done`)) done++;
@@ -125,9 +125,9 @@
     const runMissing = [];
     if (day.kind === "quality") {
       let done = 0;
-      for (let i=1;i<=day.run.reps;i++) if (stateGet(`d${selectedDay}-rep-${i}`)) done++;
+      for (let i=1;i<=day.run.reps;i++) if (stateGet(trainingPrefix(selectedDay)+`-rep-${i}`)) done++;
       if (done < day.run.reps) runMissing.push(`${day.run.title} : ${done}/${day.run.reps} répétitions`);
-      if (!stateGet(`d${selectedDay}-session-done`)) runMissing.push("Séance running non marquée terminée");
+      if (!stateGet(trainingPrefix(selectedDay)+"-session-done")) runMissing.push("Séance running non marquée terminée");
     } else if (day.kind === "endurance" && !stateGet(trainingPrefix(selectedDay)+"-run-done")) {
       runMissing.push(`Course ${day.run.minutes} min non validée`);
     } else if (day.kind === "strength-run" && !stateGet(`d${selectedDay}-run-run-done`)) {
@@ -135,6 +135,7 @@
     }
 
     const otherMissing = [];
+    if(day.kind==="wod" && !stateGet(trainingPrefix(selectedDay)+"-wod-done"))otherMissing.push("WOD non marqué terminé");
     if (day.kind === "simple" || day.kind === "rest") {
       const labels = day.kind === "simple"
         ? ["Échauffement / mobilité", "Séance de foot terminée", "Retour au calme / hydratation"]
@@ -230,7 +231,7 @@
       document.getElementById("activityCard").before(choiceCard);
     }
     choiceCard.innerHTML="";
-    const showChoice=currentWeek().scheduleVersion===2 && (selectedDay===1 || selectedDay===5);
+    const showChoice=currentWeek().scheduleVersion>=2 && (selectedDay===1 || selectedDay===5);
     choiceCard.hidden=!showChoice;
     if(showChoice) renderFootballChoice(choiceCard,selectedDay);
     if (day.kind === "simple") {
@@ -253,7 +254,7 @@
 
     if (day.kind === "strength" || day.kind === "strength-run") {
       showSection("strengthCard", true);
-      document.getElementById("strengthCardTitle").textContent = STRENGTH[day.strength].title;
+      document.getElementById("strengthCardTitle").textContent = getStrengthConfig(day.strength).title;
       document.getElementById("strengthCardSubtitle").textContent = "Charges · reps · RIR";
       const strengthPrefix = day.kind === "strength-run" ? `${prefix}-strength` : prefix;
       document.getElementById("strengthCardContent").appendChild(renderStrength(day.strength, strengthPrefix));
@@ -269,6 +270,13 @@
       );
     }
 
+    if(day.kind==="wod"){
+      showSection("activityCard",true);
+      document.getElementById("activityTitle").textContent=day.title;
+      document.getElementById("activitySubtitle").textContent="WOD cardio · intensité pilotée";
+      document.getElementById("activityContent").appendChild(renderWodSession(day,prefix));
+    }
+    renderAdaptiveOverview();
     renderFeeling();
     syncConfirmedVisuals();
   };

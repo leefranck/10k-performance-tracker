@@ -149,10 +149,10 @@
         else if (avgFeeling < 2.5) { score -= 2; reasons.push(`ressenti difficile (${avgFeeling.toFixed(1)}/5)`); }
       }
       if (energy !== null && energy <= 2) { score -= 1; reasons.push(`énergie basse (${energy}/5)`); }
-      if (legs !== null && legs <= 2) { score -= 2; reasons.push(`jambes fatiguées (${legs}/5)`); }
+      if (legs !== null && legs >= 4) { score -= 2; reasons.push(`jambes fatiguées (${legs}/5)`); }
       if (sleep !== null && sleep < 6) { score -= 1; reasons.push(`sommeil faible (${sleep} h)`); }
 
-      const hardStop = runRate < .6 || stats.percent < 60 || (legs !== null && legs <= 1) || (avgFeeling !== null && avgFeeling < 2);
+      const hardStop = runRate < .6 || stats.percent < 60 || (legs !== null && legs >= 5) || (avgFeeling !== null && avgFeeling < 2);
       const action = !hardStop && score >= 2 ? "advance" : "repeat";
       const runPercent = Math.round(runRate * 100);
       const strengthPercent = Math.round(strengthRate * 100);
@@ -160,7 +160,7 @@
       if (runRate < .7) blockers.push({ priority: 100, text: `Tu n’as validé que ${runPercent}% des objectifs running. Passer à une semaine plus exigeante maintenant augmenterait la charge alors que la charge actuelle n’est pas encore maîtrisée.` });
       if (stats.percent < 70) blockers.push({ priority: 90, text: `Tu as validé ${stats.percent}% du programme total. Il manque encore une part importante de la semaine pour considérer cette charge comme assimilée.` });
       if (avgFeeling !== null && avgFeeling < 2.5) blockers.push({ priority: 80, text: `Ton ressenti moyen est de ${avgFeeling.toFixed(1)}/5. Même si certaines séances sont passées, elles t’ont coûté trop cher pour augmenter la difficulté tout de suite.` });
-      if (legs !== null && legs <= 2) blockers.push({ priority: 75, text: `Tes jambes sont à ${legs}/5 en récupération. Le frein vient ici surtout de la fatigue résiduelle, pas forcément de ton niveau.` });
+      if (legs !== null && legs >= 4) blockers.push({ priority: 75, text: `Tes jambes sont à ${legs}/5 en récupération. Le frein vient ici surtout de la fatigue résiduelle, pas forcément de ton niveau.` });
       if (energy !== null && energy <= 2) blockers.push({ priority: 65, text: `Ton énergie est à ${energy}/5, ce qui indique que tu n’as pas encore complètement absorbé la semaine.` });
       if (sleep !== null && sleep < 6) blockers.push({ priority: 55, text: `Tu déclares ${sleep} h de sommeil. Une récupération aussi courte rend la progression moins fiable cette semaine.` });
       if (strengthRate < .5) blockers.push({ priority: 35, text: `Seulement ${strengthPercent}% du travail de musculation a été validé. C’est un signal secondaire, mais il réduit la qualité globale de la semaine hybride.` });
@@ -174,7 +174,7 @@
         if (runRate < .9) targets.push("valider au moins 90% des objectifs running");
         if (stats.percent < 85) targets.push("atteindre au moins 85% du programme");
         if (avgFeeling !== null && avgFeeling < 3.5) targets.push("retrouver un ressenti moyen d’au moins 3,5/5");
-        if (legs !== null && legs < 3) targets.push("retrouver des jambes à au moins 3/5");
+        if (legs !== null && legs > 3) targets.push("retrouver des jambes plus légères (3/5 ou moins)");
         if (energy !== null && energy < 3) targets.push("retrouver une énergie à au moins 3/5");
         target = targets.length
           ? `Pour débloquer la progression : ${targets.slice(0, 3).join(", ")}.`
@@ -343,9 +343,9 @@
           <small>${nextBlock.name} · Semaine ${next.week}/${nextBlock.weeks.length}${nextPlan.deload ? " · DELOAD" : ""}</small>
         </div>
         <div class="next-week-items">
-          <div><span>Mercredi</span><strong>${nextPlan.quality.title}</strong><small>${nextPlan.quality.pace}</small></div>
-          <div><span>Lundi</span><strong>Foot optionnel</strong><small>Sinon ${nextPlan.recovery} min facile ou repos</small></div>
-          <div><span>Vendredi</span><strong>Foot optionnel</strong><small>Sinon ${nextPlan.easy[0]} min facile ou repos</small></div>
+          <div><span>Course clé</span><strong>${nextPlan.quality.title}</strong><small>Jour adapté à tes choix · ${nextPlan.quality.pace}</small></div>
+          <div><span>Lundi</span><strong>Foot, WOD ou muscu</strong><small>Sinon ${nextPlan.recovery} min facile ou repos</small></div>
+          <div><span>Vendredi</span><strong>Foot, WOD ou muscu</strong><small>Sinon ${nextPlan.easy[0]} min facile ou repos</small></div>
           <div><span>Dimanche</span><strong>${nextPlan.long} min</strong><small>sortie longue</small></div>
         </div>
       </div>

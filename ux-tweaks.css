@@ -1118,3 +1118,16 @@ dialog {
   background: transparent;
   font-size: .72rem;
 }
+
+
+/* Adaptive activities and weekly overview */
+.activity-choice-select { width:100%; min-height:48px; border:1px solid #cbd5e1; border-radius:12px; background:#fff; padding:10px 12px; font:inherit; color:#0f172a; }
+.activity-choice-select:focus-visible { outline:3px solid #818cf8; outline-offset:2px; }
+.activity-choice-select:disabled { color:#475569; background:#f1f5f9; }
+.adaptive-overview { padding:16px; }
+.adaptive-overview summary { min-height:44px; display:flex; align-items:center; justify-content:space-between; gap:12px; cursor:pointer; font-weight:700; }
+.adaptive-overview summary span { font-size:12px; color:#6366f1; }
+.adaptive-plan-rows { margin-top:10px; }
+.adaptive-plan-row { display:grid; grid-template-columns:40px 1fr; gap:10px; padding:10px 8px; border-bottom:1px solid #e2e8f0; font-size:13px; }
+.adaptive-plan-row.selected { background:#eef2ff; border-radius:8px; }
+.adaptive-notes { font-size:12px; color:#475569; line-height:1.5; }
