@@ -108,3 +108,14 @@ Interdictions :
 
 Si le modèle de données doit évoluer, une migration rétrocompatible doit être exécutée avant le nouveau comportement, et les données existantes doivent rester lisibles après migration.
 
+
+
+## Planning adaptatif et nouveauté
+
+Lundi et vendredi proposent foot, WOD cardio, musculation, course facile ou repos. Le planning réorganise les jours à venir ; une séance commencée est figée avec ses exercices et ses clés de sauvegarde. Les anciennes semaines gardent leur planning. Deux efforts cardio intenses remplacent la course clé, et le dimanche est réduit après un vendredi intense.
+
+Les trois familles muscu (haut A, bas, haut B) disposent de quatre variations. Chaque nouveau cycle, même répété, avance d’une variation ; les mêmes exercices reviennent après quatre cycles. Les références de charges sont recherchées par nom d’exercice, pas par position dans une liste.
+
+Le WOD est une séance cardio unique avec chrono guidé, échauffement et retour au calme. Durée habituelle du foot et effort global 6–8/10 servent de repères ; une récupération basse allège le WOD. La comparaison durée × effort ressenti ne prétend pas reproduire les sollicitations physiologiques du football. Référence : https://pubmed.ncbi.nlm.nih.gov/28463642/.
+
+Validation du moteur sans dépendance : `node tests/adaptive-plan.test.cjs` (792 combinaisons de semaines et 3 888 changements après début de séance).

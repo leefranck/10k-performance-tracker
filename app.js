@@ -264,7 +264,7 @@ function previousWeekForCurrentProgram(){
   return entries[0] || null;
 }
 function renderStrength(name,prefix){
-  const cfg=STRENGTH[name], wrap=document.createElement("div"); wrap.className="stack";
+  const cfg=typeof getStrengthConfig==="function"?getStrengthConfig(name):STRENGTH[name], wrap=document.createElement("div"); wrap.className="stack";
   const helper=document.createElement("div"); helper.className="soft-card"; helper.textContent="Progression : complète la fourchette de reps avec la même charge avant d'augmenter. Garde le RIR indiqué."; wrap.appendChild(helper);
   const prev=previousWeekForCurrentProgram();
   cfg.exercises.forEach(([exercise,sets,reps,rir],ei)=>{

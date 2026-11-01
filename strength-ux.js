@@ -24,7 +24,7 @@
   }
 
   renderStrength = function renderStrengthStable(name, prefix) {
-    const cfg = STRENGTH[name];
+    const cfg = getStrengthConfig(name);
     const wrap = document.createElement("div");
     wrap.className = "stack strength-exercise-stack";
 
@@ -55,19 +55,10 @@
       const body = document.createElement("div");
       body.className = "exercise-body";
 
-      if (prev) {
-        const vals = [];
-        for (let s = 1; s <= sets; s++) {
-          const w = prev.data[`${prefix}-ex-${ei}-set-${s}-weight`];
-          const r = prev.data[`${prefix}-ex-${ei}-set-${s}-reps`];
-          if (w || r) vals.push(`${w || "—"} kg × ${r || "—"}`);
-        }
-        if (vals.length) {
-          const p = document.createElement("div");
-          p.className = "previous-set";
-          p.textContent = `Semaine précédente : ${vals.join(" · ")}`;
-          body.appendChild(p);
-        }
+      const previousValues = previousExerciseSets(exercise);
+      if (previousValues.length) {
+        const p=document.createElement("div");p.className="previous-set";
+        p.textContent="Dernière fois sur cet exercice : "+previousValues.join(" · ");body.appendChild(p);
       }
 
       for (let s = 1; s <= sets; s++) {

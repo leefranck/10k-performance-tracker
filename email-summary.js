@@ -91,17 +91,20 @@
       ...daySummaryLines(week),
       "",
       `RUNNING`,
-      `• Séance clé : ${plan.quality.title} · ${plan.quality.pace} · ${countQualityReps(week)}/${plan.quality.reps} répétitions validées`,
+      ...qualitySummaryLines(week),
       ...runningSummaryLines(week),
+      "",
+      `FOOT / WOD`,
+      ...wodSummaryLines(week),
       "",
       `MUSCULATION`,
       ...strengthSummaryLines(week),
       "",
       `PROCHAINE SEMAINE`,
       `${nextBlock.name} · Semaine ${nextPosition.week}/${nextBlock.weeks.length}${nextPlan.deload ? " · DELOAD" : ""}`,
-      `• Mercredi : ${nextPlan.quality.title} · ${nextPlan.quality.pace}`,
-      `• Lundi : foot optionnel, sinon ${nextPlan.recovery} min facile ou repos`,
-      `• Vendredi : foot optionnel, sinon ${nextPlan.easy[0]} min facile ou repos`,
+      `• Course clé : ${nextPlan.quality.title} · ${nextPlan.quality.pace} (jour adapté aux choix)`,
+      `• Lundi : foot, WOD, muscu, ${nextPlan.recovery} min facile ou repos`,
+      `• Vendredi : foot, WOD, muscu, ${nextPlan.easy[0]} min facile ou repos`,
       `• Dimanche : ${nextPlan.long} min sortie longue`,
       "",
       `Destinataire : ${SUMMARY_EMAIL}`,
@@ -165,17 +168,15 @@
   }
 
   function strengthSummaryLines(week) {
-    const sessions = [
-      ["Mardi", "upperA", "d2-strength"],
-      ["Jeudi", "lower", "d4"],
-      ["Vendredi", "upperB", "d5-strength"]
-    ];
+    const sessions = week.adaptive
+      ? Object.entries(week.adaptive.plan).filter(([,d])=>d.strength).map(([id,d])=>[d.name,d.strength,d.kind==="strength-run"?d.prefix+"-strength":d.prefix,Number(id)])
+      : [["Mardi","upperA","d2-strength",2],["Jeudi","lower","d4",4],...(week.scheduleVersion===2?[]:[["Vendredi","upperB","d5-strength",5]])];
     const lines = [];
 
-    if(week.scheduleVersion===2) sessions.pop();
-    sessions.forEach(([day, strengthName, prefix]) => {
-      lines.push(`${day} — ${STRENGTH[strengthName].title}`);
-      STRENGTH[strengthName].exercises.forEach(([exercise, sets], exerciseIndex) => {
+    sessions.forEach(([day, strengthName, prefix, id]) => {
+      const cfg=getStrengthConfig(strengthName,week,id);
+      lines.push(`${day} — ${cfg.title}`);
+      cfg.exercises.forEach(([exercise, sets], exerciseIndex) => {
         let completed = 0;
         const entered = [];
         for (let set = 1; set <= sets; set++) {
@@ -197,7 +198,7 @@
   function runningSummaryLines(week) {
     const previous=currentWeek; currentWeek=()=>week;
     try {
-      return [1,2,5,0].flatMap(id=>{
+      return PLAN_DAYS.flatMap(id=>{
         const day=getDay(id), prefix=trainingPrefix(id);
         if(day.kind==="strength-run") return [`• ${day.name} : ${day.run.minutes} min facile · ${boolLabel(week.data[prefix+"-run-run-done"])}`];
         if(day.kind==="endurance") return [`• ${day.name} : ${day.run.minutes} min facile · ${boolLabel(week.data[prefix+"-run-done"])}`];
@@ -207,11 +208,22 @@
     } finally { currentWeek=previous; }
   }
 
-  function countQualityReps(week) {
-    const plan = PROGRAM[week.program.block].weeks[week.program.week - 1];
-    let done = 0;
-    for (let i = 1; i <= plan.quality.reps; i++) if (week.data[`d3-rep-${i}`]) done++;
-    return done;
+  function qualitySummaryLines(week){
+    const previous=currentWeek;currentWeek=()=>week;
+    try {
+      const days=PLAN_DAYS.map(id=>[id,getDay(id)]).filter(([,d])=>d.kind==="quality");
+      if(!days.length)return ["• Pas de course clé : planning adapté aux autres efforts de la semaine."];
+      return days.map(([id,d])=>{const prefix=trainingPrefix(id);let done=0;for(let i=1;i<=d.run.reps;i++)if(week.data[prefix+"-rep-"+i])done++;return `• ${d.name} : ${d.title} · ${d.run.pace} · ${done}/${d.run.reps} répétitions validées`;});
+    }finally{currentWeek=previous;}
+  }
+  function wodSummaryLines(week){
+    if(!week.adaptive)return ["• Selon le planning historique"];
+    return PLAN_DAYS.flatMap(id=>{
+      const d=week.adaptive.plan[id];if(!["simple","wod"].includes(d.kind))return [];
+      if(d.kind==="simple")return [`• ${d.name} : football · ${boolLabel(week.data[d.prefix+"-step-1"])}`];
+      const rpe=week.data[d.prefix+"-rpe"],minutes=week.data[d.prefix+"-actual-minutes"]||d.wod.minutes;
+      return [`• ${d.name} : ${d.title} · ${boolLabel(week.data[d.prefix+"-wod-done"])} · ${minutes} min · effort ${rpe||"non renseigné"}${rpe?"/10 · charge "+(Number(rpe)*Number(minutes)):""}`];
+    });
   }
 
   function nextPositionFor(program) {
