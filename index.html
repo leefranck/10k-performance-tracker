@@ -8,10 +8,10 @@
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
   <title>10K Hybrid Performance</title>
-  <link rel="stylesheet" href="./styles.css?v=20261001-0148-1" />
-  <link rel="stylesheet" href="./ux-tweaks.css?v=20261001-0148-1" />
-  <link rel="stylesheet" href="./week-flow.css?v=20261001-0148-1" />
-  <link rel="stylesheet" href="./email-summary.css?v=20261001-0148-1" />
+  <link rel="stylesheet" href="./styles.css?v=20261101-1905-1" />
+  <link rel="stylesheet" href="./ux-tweaks.css?v=20261101-1905-1" />
+  <link rel="stylesheet" href="./week-flow.css?v=20261101-1905-1" />
+  <link rel="stylesheet" href="./email-summary.css?v=20261101-1905-1" />
 </head>
 <body>
   <div class="app-shell">
@@ -41,9 +41,9 @@
         <p id="blockDescription" class="microcopy"></p>
         <div class="compact-status-row">
           <div class="compact-meta">
-            <span>🏃 4 running</span>
-            <span>🏋️ 3 muscu</span>
-            <span>⚽ 1 foot</span>
+            <span>🏃 Course selon planning</span>
+            <span>🏋️ 2 muscu</span>
+            <span>⚽ Foot optionnel lun. / ven.</span>
           </div>
           <span class="compact-meta"><strong id="goalProgress">0%</strong>&nbsp;vers le sub‑40</span>
         </div>
@@ -222,7 +222,7 @@
 
   <script>
     (() => {
-      const BUILD = "20261001-0148-1";
+      const BUILD = "20261101-1905-1";
       const currentUrl = new URL(window.location.href);
 
       fetch(`./version.json?t=${Date.now()}`, { cache: "no-store" })
@@ -254,11 +254,11 @@
       }));
     })();
   </script>
-  <script src="./app.js?v=20261001-0148-1"></script>
-  <script src="./strength-ux.js?v=20261001-0148-1"></script>
-  <script src="./day-ux.js?v=20261001-0148-1"></script>
-  <script src="./week-flow.js?v=20261001-0148-1"></script>
-  <script src="./email-summary.js?v=20261001-0148-1"></script>
+  <script src="./app.js?v=20261101-1905-1"></script>
+  <script src="./strength-ux.js?v=20261101-1905-1"></script>
+  <script src="./day-ux.js?v=20261101-1905-1"></script>
+  <script src="./week-flow.js?v=20261101-1905-1"></script>
+  <script src="./email-summary.js?v=20261101-1905-1"></script>
   <script>
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
@@ -270,3 +270,4 @@
   </script>
 </body>
 </html>
+

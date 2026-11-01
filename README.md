@@ -1,6 +1,6 @@
 # 10K Hybrid Performance Tracker
 
-Application mobile-first pour progresser d'un 10 km en ~44:00 vers moins de 40:00 tout en conservant une vraie progression de musculation et une séance de football le lundi.
+Application mobile-first pour progresser d'un 10 km en ~44:00 vers moins de 40:00 tout en conservant une vraie progression de musculation et du football optionnel le lundi et le vendredi.
 
 ## Philosophie
 
@@ -8,16 +8,16 @@ Application mobile-first pour progresser d'un 10 km en ~44:00 vers moins de 40:0
 - les séances running changent chaque semaine de façon planifiée
 - les mouvements principaux de musculation restent stables pour mesurer la surcharge progressive
 - une semaine de deload est intégrée régulièrement
-- le foot du lundi est compté comme une séance haute intensité
+- le foot, lorsqu’il est choisi le lundi ou le vendredi, est la seule activité du jour
 - aucun reset destructif automatique
 
 ## Semaine type
 
-- Lundi : football
-- Mardi : Upper A + footing récupération optionnel
+- Lundi : foot optionnel ; sinon course facile ou repos
+- Mardi : Upper A, sans cardio
 - Mercredi : séance running clé
 - Jeudi : Lower body
-- Vendredi : Upper B + endurance facile / strides
+- Vendredi : foot optionnel ; sinon course facile ou repos
 - Samedi : repos
 - Dimanche : sortie longue
 
@@ -54,7 +54,7 @@ weeks {
 }
 ```
 
-À la détection d'une nouvelle semaine ISO, l'application demande confirmation avant d'archiver l'ancienne et de créer la nouvelle. Les anciennes semaines ne sont jamais effacées par ce processus.
+Le changement de semaine reste manuel via le bilan : progresser ou répéter. Chaque nouvelle semaine redemande les choix de foot. Les anciennes semaines conservent leur planning et leurs données.
 
 Le bouton **Exporter mes données** crée en plus une sauvegarde JSON locale.
 
@@ -107,3 +107,4 @@ Interdictions :
 - une mise à jour PWA / service worker / cache ne doit jamais toucher aux données utilisateur.
 
 Si le modèle de données doit évoluer, une migration rétrocompatible doit être exécutée avant le nouveau comportement, et les données existantes doivent rester lisibles après migration.
+

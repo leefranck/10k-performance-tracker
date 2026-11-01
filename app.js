@@ -89,6 +89,14 @@ function qTime(title,reps,workSec,recoverySec,pace,deload=false){ return {type:"
 function qDistance(title,reps,distanceKm,recoverySec,pace,deload=false){ return {type:"quality",title,reps,distanceKm,recoverySec,pace,deload}; }
 
 const store = loadStore();
+// Apply the new schedule only to the active week; archived plans stay intact.
+if (!store.weeks[store.activeWeekKey].scheduleVersion) {
+  store.weeks[store.activeWeekKey].scheduleVersion = 2;
+  if (store.weeks[store.activeWeekKey].data["d1-step-1"]) {
+    store.weeks[store.activeWeekKey].football = {1:"yes"};
+  }
+  saveStore();
+}
 let selectedDay = chooseDefaultDay();
 let timer = createTimerState();
 let rolloverDismissed = false;
@@ -116,7 +124,7 @@ function loadStore() {
   return fresh;
 }
 function saveStore(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(store)); }
-function createWeek(key, program){ return { key, status:"active", startedAt:new Date().toISOString(), completedAt:null, program:{...program}, data:{}, recovery:{}, pbSnapshot:store?.settings?.pbSeconds ?? BASELINE_10K }; }
+function createWeek(key, program, pbSeconds=BASELINE_10K){ return { scheduleVersion:2, key, status:"active", startedAt:new Date().toISOString(), completedAt:null, program:{...program}, data:{}, recovery:{}, pbSnapshot:pbSeconds }; }
 function currentWeek(){ return store.weeks[store.activeWeekKey]; }
 function weekData(){ return currentWeek().data; }
 function stateGet(k,fallback=false){ return weekData()[k] ?? fallback; }
@@ -158,13 +166,26 @@ function getDay(dayId){
   const w=programWeek();
   const common={
     1:{short:"Lun",name:"Lundi",icon:"⚽",type:"Football",title:"Football",kind:"simple",tip:"Le foot compte comme ta séance haute intensité : sprints, accélérations et changements de direction."},
-    2:{short:"Mar",name:"Mardi",icon:"🏋️",type:"Upper + récup",title:STRENGTH.upperA.title,kind:"strength-run",strength:"upperA",run:{title:"Footing récupération",minutes:w.recovery,pace:"5:45–6:15/km"},tip:"Le footing est optionnel si les jambes sont encore lourdes du foot. L'objectif est de récupérer, pas d'ajouter de fatigue."},
+    2:{short:"Mar",name:"Mardi",icon:"🏋️",type:"Upper + récup",title:STRENGTH.upperA.title,kind:"strength-run",strength:"upperA",run:{title:"Footing récupération",minutes:w.recovery,pace:"5:45–6:15/km"},tip:"Le footing est optionnel si les jambes sont encore lourdes du foot."},
     3:{short:"Mer",name:"Mercredi",icon:"🏃",type:"Running clé",title:w.quality.title,kind:"quality",run:w.quality,tip:"La qualité vient de la régularité. Sur tapis, règle d'abord la vitesse puis démarre le chrono manuellement."},
     4:{short:"Jeu",name:"Jeudi",icon:"🏋️",type:"Lower",title:STRENGTH.lower.title,kind:"strength",strength:"lower",tip:"Pas d'échec sur squat/RDL. Garde de la marge pour absorber le running et le foot."},
     5:{short:"Ven",name:"Vendredi",icon:"🏋️‍♂️",type:"Upper + easy",title:STRENGTH.upperB.title,kind:"strength-run",strength:"upperB",run:{title:"Endurance facile",minutes:w.easy[0],pace:"5:20–5:55/km",strides:w.easy[1]},tip:"La course reste facile. Les strides sont rapides mais relâchées, jamais à bloc."},
     6:{short:"Sam",name:"Samedi",icon:"💤",type:"Repos",title:"Repos complet",kind:"rest",tip:"Marche tranquille possible, mais protège ce jour : il rend les autres séances meilleures."},
     0:{short:"Dim",name:"Dimanche",icon:"🏃",type:"Sortie longue",title:`Endurance · ${w.long} min`,kind:"endurance",run:{minutes:w.long,pace:"5:20–5:55/km"},tip:"Reste en aisance respiratoire. Le but est d'augmenter le moteur aérobie, pas de transformer la sortie longue en tempo."}
   };
+  if(currentWeek().scheduleVersion!==2) return common[dayId];
+  if(dayId===2) return {...common[2],type:"Upper",kind:"strength",run:undefined,tip:"Une seule activité aujourd’hui : musculation, sans cardio ajouté."};
+  if(dayId===1 || dayId===5){
+    const choice=currentWeek().football?.[dayId] ?? "pending";
+    const base={short:common[dayId].short,name:common[dayId].name};
+    if(choice==="yes") return {...base,icon:"⚽",type:"Football",title:"Football",kind:"simple",tip:"Le foot est la seule séance du jour."};
+    if(choice==="rest") return {...base,icon:"💤",type:"Repos",title:"Repos",kind:"rest",tip:"Repos choisi : aucune séance à rattraper."};
+    if(choice==="no"){
+      const minutes=dayId===1?w.recovery:w.easy[0];
+      return {...base,icon:"🏃",type:"Course facile",title:"Endurance facile · "+minutes+" min",kind:"endurance",run:{title:"Endurance facile",minutes,pace:"5:45–6:15/km"},tip:"Pas de foot : cours en aisance respiratoire. Si tu es fatigué, choisis le repos."};
+    }
+    return {...base,icon:"⚽",type:"À confirmer",title:"Foot ou course facile ?",kind:"pending",tip:"Déclare si tu joues pour afficher ta séance. Une seule activité par jour."};
+  }
   return common[dayId];
 }
 
@@ -269,9 +290,41 @@ function renderStrength(name,prefix){
   return wrap;
 }
 
+function trainingPrefix(dayId){
+  const day=getDay(dayId);
+  if(day.kind==="strength-run") return "d"+dayId;
+  if(dayId===2 && day.kind==="strength") return "d2-strength";
+  if(dayId===5 && day.kind==="endurance") return "d5-run";
+  if(currentWeek().scheduleVersion===2 && (dayId===1 || dayId===5)){
+    if(day.kind==="rest") return "d"+dayId+"-rest";
+    if(dayId===5 && day.kind==="simple") return "d5-foot";
+  }
+  return "d"+dayId;
+}
+function renderFootballChoice(content,dayId){
+  const wrap=document.createElement("div"); wrap.className="soft-card stack";
+  const label=document.createElement("strong"); label.textContent="Foot "+(dayId===1?"lundi":"vendredi")+" cette semaine ?";
+  const select=document.createElement("select"); select.setAttribute("aria-label",label.textContent);
+  select.style.cssText="min-height:48px;width:100%;font:inherit";
+  [["pending","À confirmer"],["yes","Oui, je joue"],["no","Non, course facile"],["rest","Non, repos"]].forEach(([value,text])=>{
+    const option=document.createElement("option"); option.value=value; option.textContent=text; select.appendChild(option);
+  });
+  select.value=currentWeek().football?.[dayId] ?? "pending";
+  select.disabled=currentWeek().key!==store.activeWeekKey;
+  select.addEventListener("change",()=>{
+    if(currentWeek().key!==store.activeWeekKey) return;
+    currentWeek().football ??={}; currentWeek().football[dayId]=select.value;
+    currentWeek().data["d"+dayId+"-day-validated"]=false;
+    currentWeek().validated=false; saveStore(); resetTimer(); render();
+  });
+  wrap.append(label,select); content.appendChild(wrap);
+}
 function renderTraining(){
-  const d=getDay(selectedDay), content=document.getElementById("trainingContent"), prefix=`d${selectedDay}`;
+  const d=getDay(selectedDay), content=document.getElementById("trainingContent"), prefix=trainingPrefix(selectedDay);
+  if(!content) return;
   document.getElementById("trainingTitle").textContent=d.title; document.getElementById("trainingBadge").textContent=d.type; content.innerHTML="";
+  if(selectedDay===1 || selectedDay===5) renderFootballChoice(content,selectedDay);
+  if(d.kind==="pending") return;
   if(d.kind==="simple"){
     ["Échauffement / mobilité","Séance de foot terminée","Retour au calme / hydratation"].forEach((x,i)=>content.appendChild(checkboxRow(`${prefix}-step-${i}`,x))); return;
   }
@@ -289,7 +342,7 @@ function renderTraining(){
 }
 
 function trackableKeysForDay(dayId){
-  const d=getDay(dayId), p=`d${dayId}`, keys=[];
+  const d=getDay(dayId), p=trainingPrefix(dayId), keys=[];
   if(d.kind==="simple"||d.kind==="rest") for(let i=0;i<3;i++) keys.push(`${p}-step-${i}`);
   if(d.kind==="quality"){ for(let i=1;i<=d.run.reps;i++) keys.push(`${p}-rep-${i}`); keys.push(`${p}-session-done`); }
   if(d.kind==="endurance") keys.push(`${p}-run-done`);
@@ -359,7 +412,7 @@ function archiveAndCreateNewWeek(forceCurrentKey=null){
   const old=currentWeek(); old.status="archived"; old.completedAt=new Date().toISOString(); old.pbSnapshot=store.settings.pbSeconds;
   const newKey=forceCurrentKey || isoWeekKey(new Date()); const position=nextProgramPosition();
   let keyCandidate=newKey, suffix=2; while(store.weeks[keyCandidate]) keyCandidate=`${newKey}-${suffix++}`;
-  store.weeks[keyCandidate]=createWeek(keyCandidate,position); store.activeWeekKey=keyCandidate; saveStore(); rolloverDismissed=false; render();
+  store.weeks[keyCandidate]=createWeek(keyCandidate,position,store.settings.pbSeconds); store.activeWeekKey=keyCandidate; saveStore(); rolloverDismissed=false; render();
   const p=old.program; if(p.week>=PROGRAM[p.block].weeks.length && nextBlockName(p.block)) showBlockDialog(p.block);
 }
 function showRolloverIfNeeded(){
@@ -405,3 +458,4 @@ function render(){
 }
 
 bindStaticEvents(); render(); showRolloverIfNeeded();
+

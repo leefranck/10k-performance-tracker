@@ -1,4 +1,4 @@
-const BUILD = "20261001-0148-1";
+const BUILD = "20261101-1905-1";
 const STATIC_CACHE = `tenk-static-${BUILD}`;
 const RUNTIME_CACHE = `tenk-runtime-${BUILD}`;
 
@@ -90,3 +90,4 @@ self.addEventListener("fetch", (event) => {
 self.addEventListener("message", (event) => {
   if (event.data?.type === "SKIP_WAITING") self.skipWaiting();
 });
+

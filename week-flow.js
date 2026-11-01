@@ -344,7 +344,8 @@
         </div>
         <div class="next-week-items">
           <div><span>Mercredi</span><strong>${nextPlan.quality.title}</strong><small>${nextPlan.quality.pace}</small></div>
-          <div><span>Vendredi</span><strong>${nextPlan.easy[0]} min facile</strong><small>${nextPlan.easy[1] ? `+ ${nextPlan.easy[1]} strides` : "sans strides"}</small></div>
+          <div><span>Lundi</span><strong>Foot optionnel</strong><small>Sinon ${nextPlan.recovery} min facile ou repos</small></div>
+          <div><span>Vendredi</span><strong>Foot optionnel</strong><small>Sinon ${nextPlan.easy[0]} min facile ou repos</small></div>
           <div><span>Dimanche</span><strong>${nextPlan.long} min</strong><small>sortie longue</small></div>
         </div>
       </div>
@@ -376,7 +377,7 @@
     old.weekRecommendation = weeklyRecommendation(old, completionForWeek(old.key));
 
     const newKey = uniqueWeekKey();
-    const repeated = createWeek(newKey, { ...old.program });
+    const repeated = createWeek(newKey, { ...old.program },store.settings.pbSeconds);
     repeated.cycleNumber = nextCycleNumber();
     repeated.previousWeekKey = old.key;
     repeated.repeatedFromWeekKey = old.key;
@@ -416,7 +417,7 @@
     old.weekRecommendation = weeklyRecommendation(old, completionForWeek(old.key));
 
     const newKey = uniqueWeekKey();
-    const next = createWeek(newKey, nextPosition);
+    const next = createWeek(newKey, nextPosition,store.settings.pbSeconds);
     next.cycleNumber = nextCycleNumber();
     next.previousWeekKey = old.key;
     old.nextWeekKey = newKey;
@@ -506,3 +507,4 @@
     });
   }
 })();
+
