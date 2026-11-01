@@ -111,7 +111,7 @@
 
     const strengthMissing = [];
     if (day.strength) {
-      const prefix = day.kind === "strength-run" ? `d${selectedDay}-strength` : `d${selectedDay}`;
+      const prefix = trainingPrefix(selectedDay);
       STRENGTH[day.strength].exercises.forEach(([exercise, sets], exerciseIndex) => {
         let done = 0;
         for (let set = 1; set <= sets; set++) {
@@ -127,7 +127,7 @@
       for (let i=1;i<=day.run.reps;i++) if (stateGet(`d${selectedDay}-rep-${i}`)) done++;
       if (done < day.run.reps) runMissing.push(`${day.run.title} : ${done}/${day.run.reps} répétitions`);
       if (!stateGet(`d${selectedDay}-session-done`)) runMissing.push("Séance running non marquée terminée");
-    } else if (day.kind === "endurance" && !stateGet(`d${selectedDay}-run-done`)) {
+    } else if (day.kind === "endurance" && !stateGet(trainingPrefix(selectedDay)+"-run-done")) {
       runMissing.push(`Course ${day.run.minutes} min non validée`);
     } else if (day.kind === "strength-run" && !stateGet(`d${selectedDay}-run-run-done`)) {
       runMissing.push(`${day.run.title} non validé`);
@@ -148,6 +148,7 @@
 
   function openConfirmDialog() {
     const day = getDay(selectedDay);
+    if(day.kind==="pending"){ document.querySelector("#activityContent select")?.focus(); return; }
     const missing = missingForDay();
     const feeling = String(stateGet(dailyKey("feeling"), ""));
     const feelingLabels = { "1":"Très dur", "2":"Dur", "3":"Correct", "4":"Bien", "5":"Excellent" };
@@ -208,7 +209,7 @@
 
   renderTraining = function renderIndependentDayCards() {
     const day = getDay(selectedDay);
-    const prefix = `d${selectedDay}`;
+    const prefix = trainingPrefix(selectedDay);
     syncWeeklyValidationVisibility();
     syncWeeklyValidationVisibility();
 // Legacy training header is no longer used, but keep IDs harmless if other code reads them.
@@ -221,6 +222,12 @@
     hideSection("strengthCard");
     hideSection("runCard");
 
+    if(selectedDay===1 || selectedDay===5){
+      showSection("activityCard",true);
+      document.getElementById("activityTitle").textContent="Foot cette semaine";
+      document.getElementById("activitySubtitle").textContent="Une seule activité par jour";
+      renderFootballChoice(document.getElementById("activityContent"),selectedDay);
+    }
     if (day.kind === "simple") {
       const card = showSection("activityCard", true);
       document.getElementById("activityTitle").textContent = "Football";
