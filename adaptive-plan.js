@@ -104,7 +104,7 @@ function rebuildAdaptivePlan(week=currentWeek(),changedDay=null){
   plan[0].type="Sortie longue";
   if(mon==="strength"){
     plan[2]=easy(2,p.recovery);
-    notes.push("Muscu lundi : la séance haut du corps du mardi est remplacée par une course facile.");
+    notes.push("Muscu lundi : les séances encore disponibles sont réorganisées pour éviter les doublons.");
   }
   if(hard(fri)){
     plan[3]=strength(3,"lower");plan[4]=rest(4);
@@ -114,12 +114,12 @@ function rebuildAdaptivePlan(week=currentWeek(),changedDay=null){
     }else{
       plan[2]=quality(2);
       if(mon!=="strength")plan[4]=strength(4,"upperA");
-      notes.push("Foot ou WOD vendredi : course clé mardi, jambes mercredi, puis pas de jambes la veille.");
+      notes.push("Foot ou WOD vendredi : la course clé et les jambes sont replacées selon les séances déjà commencées.");
     }
     plan[0]=easy(0,Math.min(p.long,60));plan[0].type="Sortie longue adaptée";
-    notes.push("Dimanche limité à 60 min faciles après l’effort intense du vendredi.");
+
   }
-  if(fri==="strength")notes.push("Muscu vendredi : haut du corps B, complémentaire aux jambes du jeudi.");
+  if(fri==="strength")notes.push("Muscu vendredi : groupe musculaire choisi en complément des autres séances.");
   if(light)notes.push("Récupération basse ou semaine allégée : volume muscu réduit et course clé remplacée par du facile.");
   // A logged session never changes exercise names, targets or storage namespace.
   PLAN_DAYS.forEach(id=>{if(a.plan[id]&&hasSessionData(week,id))a.locked[id]=copySession(a.plan[id]);});
@@ -182,6 +182,7 @@ function rebuildAdaptivePlan(week=currentWeek(),changedDay=null){
     const d=plan[id];
     if(!d.prefix)d.prefix=`d${id}-v3-${d.kind}-${d.strength||"cardio"}-${a.rotation%4}`;
   });
+  if(hard(fri) && plan[0].kind==="endurance" && plan[0].run.minutes<=60)notes.push("Dimanche limité à 60 min faciles après l’effort intense du vendredi.");
   a.plan=plan;a.notes=[...new Set(notes)];a.programSignature=JSON.stringify(week.program);
 }
 getDay=function adaptiveDay(dayId){
