@@ -64,6 +64,7 @@
     const target = document.getElementById("feelingCardContent");
     const feeling = String(stateGet(dailyKey("feeling"), ""));
     const confirmed = isDayConfirmed();
+    const pending = getDay(selectedDay).kind === "pending";
 
     target.innerHTML = `
       <div class="feeling-control" role="group" aria-label="Ressenti de la journée">
@@ -78,10 +79,10 @@
             <span>${emoji}</span><small>${label}</small>
           </button>`).join("")}
       </div>
-      <button id="dailyValidationButton" type="button" class="${confirmed ? "secondary-button daily-validate-button confirmed" : "primary-button daily-validate-button"}">
+      <button id="dailyValidationButton" type="button" ${pending ? "disabled" : ""} class="${confirmed ? "secondary-button daily-validate-button confirmed" : "primary-button daily-validate-button"}">
         ${confirmed ? "Annuler la confirmation" : "Valider la journée"}
       </button>
-      <p class="daily-check-hint">${confirmed ? "Journée confirmée. Tu peux la réouvrir sans perdre tes données." : "La validation affiche d’abord un récap des éléments réalisés et manquants."}</p>
+      <p class="daily-check-hint">${pending ? "Choisis d’abord foot, course facile ou repos." : confirmed ? "Journée confirmée. Tu peux la réouvrir sans perdre tes données." : "La validation affiche d’abord un récap des éléments réalisés et manquants."}</p>
     `;
 
     target.querySelectorAll(".feeling-button").forEach((button) => {
@@ -111,7 +112,7 @@
 
     const strengthMissing = [];
     if (day.strength) {
-      const prefix = trainingPrefix(selectedDay);
+      const prefix = day.kind === "strength-run" ? `d${selectedDay}-strength` : trainingPrefix(selectedDay);
       STRENGTH[day.strength].exercises.forEach(([exercise, sets], exerciseIndex) => {
         let done = 0;
         for (let set = 1; set <= sets; set++) {
@@ -139,7 +140,7 @@
         ? ["Échauffement / mobilité", "Séance de foot terminée", "Retour au calme / hydratation"]
         : ["Repos respecté", "Hydratation correcte", "7–9 h de sommeil visées"];
       labels.forEach((label, i) => {
-        if (!stateGet(`d${selectedDay}-step-${i}`)) otherMissing.push(label);
+        if (!stateGet(trainingPrefix(selectedDay)+`-step-${i}`)) otherMissing.push(label);
       });
     }
 
@@ -148,7 +149,7 @@
 
   function openConfirmDialog() {
     const day = getDay(selectedDay);
-    if(day.kind==="pending"){ document.querySelector("#activityContent select")?.focus(); return; }
+    if(day.kind==="pending"){ document.querySelector("#footballChoiceCard select")?.focus(); return; }
     const missing = missingForDay();
     const feeling = String(stateGet(dailyKey("feeling"), ""));
     const feelingLabels = { "1":"Très dur", "2":"Dur", "3":"Correct", "4":"Bien", "5":"Excellent" };
@@ -222,12 +223,16 @@
     hideSection("strengthCard");
     hideSection("runCard");
 
-    if(selectedDay===1 || selectedDay===5){
-      showSection("activityCard",true);
-      document.getElementById("activityTitle").textContent="Foot cette semaine";
-      document.getElementById("activitySubtitle").textContent="Une seule activité par jour";
-      renderFootballChoice(document.getElementById("activityContent"),selectedDay);
+    let choiceCard=document.getElementById("footballChoiceCard");
+    if(!choiceCard){
+      choiceCard=document.createElement("section"); choiceCard.id="footballChoiceCard";
+      choiceCard.className="panel day-card";
+      document.getElementById("activityCard").before(choiceCard);
     }
+    choiceCard.innerHTML="";
+    const showChoice=currentWeek().scheduleVersion===2 && (selectedDay===1 || selectedDay===5);
+    choiceCard.hidden=!showChoice;
+    if(showChoice) renderFootballChoice(choiceCard,selectedDay);
     if (day.kind === "simple") {
       const card = showSection("activityCard", true);
       document.getElementById("activityTitle").textContent = "Football";

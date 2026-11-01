@@ -92,9 +92,7 @@
       "",
       `RUNNING`,
       `• Séance clé : ${plan.quality.title} · ${plan.quality.pace} · ${countQualityReps(week)}/${plan.quality.reps} répétitions validées`,
-      `• Mardi récup : ${plan.recovery} min · ${boolLabel(week.data["d2-run-run-done"])}`,
-      `• Vendredi easy : ${plan.easy[0]} min${plan.easy[1] ? ` + ${plan.easy[1]} strides` : ""} · ${boolLabel(week.data["d5-run-run-done"])}`,
-      `• Dimanche long : ${plan.long} min · ${boolLabel(week.data["d0-run-done"])}`,
+      ...runningSummaryLines(week),
       "",
       `MUSCULATION`,
       ...strengthSummaryLines(week),
@@ -102,7 +100,8 @@
       `PROCHAINE SEMAINE`,
       `${nextBlock.name} · Semaine ${nextPosition.week}/${nextBlock.weeks.length}${nextPlan.deload ? " · DELOAD" : ""}`,
       `• Mercredi : ${nextPlan.quality.title} · ${nextPlan.quality.pace}`,
-      `• Vendredi : ${nextPlan.easy[0]} min facile${nextPlan.easy[1] ? ` + ${nextPlan.easy[1]} strides` : ""}`,
+      `• Lundi : foot optionnel, sinon ${nextPlan.recovery} min facile ou repos`,
+      `• Vendredi : foot optionnel, sinon ${nextPlan.easy[0]} min facile ou repos`,
       `• Dimanche : ${nextPlan.long} min sortie longue`,
       "",
       `Destinataire : ${SUMMARY_EMAIL}`,
@@ -154,6 +153,7 @@
     currentWeek = () => week;
     try {
       return labels.map(([id, day, name]) => {
+        name = getDay(id).title;
         const keys = trackableKeysForDay(id);
         const done = keys.filter((key) => Boolean(week.data[key])).length;
         const pct = keys.length ? Math.round((done / keys.length) * 100) : 0;
@@ -172,6 +172,7 @@
     ];
     const lines = [];
 
+    if(week.scheduleVersion===2) sessions.pop();
     sessions.forEach(([day, strengthName, prefix]) => {
       lines.push(`${day} — ${STRENGTH[strengthName].title}`);
       STRENGTH[strengthName].exercises.forEach(([exercise, sets], exerciseIndex) => {
@@ -191,6 +192,19 @@
     });
 
     return lines;
+  }
+
+  function runningSummaryLines(week) {
+    const previous=currentWeek; currentWeek=()=>week;
+    try {
+      return [1,2,5,0].flatMap(id=>{
+        const day=getDay(id), prefix=trainingPrefix(id);
+        if(day.kind==="strength-run") return [`• ${day.name} : ${day.run.minutes} min facile · ${boolLabel(week.data[prefix+"-run-run-done"])}`];
+        if(day.kind==="endurance") return [`• ${day.name} : ${day.run.minutes} min facile · ${boolLabel(week.data[prefix+"-run-done"])}`];
+        if(id===1 || id===5) return [`• ${day.name} : ${day.title}`];
+        return [];
+      });
+    } finally { currentWeek=previous; }
   }
 
   function countQualityReps(week) {
